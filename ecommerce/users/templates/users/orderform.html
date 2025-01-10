@@ -1,0 +1,45 @@
+{% extends 'layouts.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>Order Form</title>
+{% endblock %}
+
+{% block main-content %}
+{% include 'users/header.html' %}
+<h2 class="text-center">Order Form</h2>
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-5 shadow">
+            {% for msg in messages %}
+
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success">
+                        {{msg}}
+                    </div>
+
+
+                {% endif %}
+
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR  %}
+                    <div class="alert alert-danger">
+                        {{msg}}
+                    </div>
+
+
+                {% endif %}
+
+            {% endfor %}
+           <form action="" method="post" >
+            {% csrf_token %}
+             {{ form|crispy }}
+
+             <div class="my-2">
+                <input type="submit" value="Order" name="submit" class="btn btn-primary">
+             </div>
+           </form>
+        </div>
+    </div>
+</div>
+{% include 'users/footer.html' %}
+{% endblock %}

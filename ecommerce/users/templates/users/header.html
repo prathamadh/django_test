@@ -1,0 +1,350 @@
+{% load static %}
+
+<!-- <header class="p-3 text-bg-dark">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+          <img src="" alt="LOGO">
+      </a>
+
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="/" class="nav-link px-2 text-white">Shop</a></li>
+        <li><a href="/productlist" class="nav-link px-2 text-white">Home and Kitchen</a></li>
+        <li><a href="/cart" class="nav-link px-2 text-white">Personal goods</a></li>
+        <li><a href="#" class="nav-link px-2 text-white">Decorative</a></li>
+        <li><a href="#" class="nav-link px-2 text-white">Beauty</a></li>
+      </ul>
+
+      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+        <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+      </form>
+
+      <div class="text-end">
+        {% if user.is_authenticated %}
+        <a href="/logout" type="button" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Log Out
+        </a>
+        {% else %}
+        <a href="/login" type="button" class="btn btn-outline-light me-2">
+          <i class="fa-regular fa-user"></i> 
+        </a>
+        <a href="/register" type="button" class="btn btn-warning">
+            <i class="fas fa-user-plus"></i>
+        </a>
+        {% endif %}
+    </div>
+    
+    </div>
+  </div>
+</header> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco-Bazar</title>
+
+  <!-- Custom CSS link -->
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <style>
+    .navbar-first{
+    background-color: rgb(243, 243, 191);
+    padding-top: 1px;
+    padding-bottom: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.navbar-first .navbar-text {
+    color: black;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.navbar-second {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    height: 120px; 
+    padding: 0 15px; 
+    border: none;
+}
+
+.navbar-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%; 
+    display: flex;
+    align-items: center; 
+}
+
+.navbar-logo img {
+    max-height: 120px; 
+    width: auto; 
+}
+
+.navbar-second .search-input {
+    width: 250px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 4px;
+    outline: none;
+
+}
+
+.navbar-second .search-btn {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.search-btn:focus {
+    outline: none; 
+    box-shadow: none;
+}
+
+.navbar-second .search-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+@media (max-width: 768px ) {
+    .navbar-second .search-input {
+        width: 100%; 
+    }
+
+    .navbar-second .search-btn {
+        margin-left: 10px; 
+    }
+}
+.d-flex a {
+    font-size: 1.8rem;
+    transition: color 0.3s ease;
+}
+
+.d-flex .fa-shopping-cart {
+    color:rgb(219, 159, 49)
+
+}
+
+.d-flex .fa-user-circle {
+    color: rgb(219, 159, 49)
+}
+
+.d-flex .fa-heart {
+    color: rgb(219, 159, 49)
+}
+
+.d-flex a:hover {
+    color: black
+}
+
+.d-flex .me-3 {
+    margin-left: 1rem;
+    position: relative;
+    right: 40px;
+}
+
+.btn-outline-secondary {
+    color: black;
+    background-color: transparent;
+    padding: 10px 20px;
+    font-size: 20px; 
+    transition: all 0.3s ease; 
+    display: flex; 
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.offcanvas-end {
+    background-color: whitesmoke;
+    width: 320px !important; 
+}
+
+.offcanvas-header {
+    background-color: #eee; 
+    color: black;
+    padding: 15px;
+    display: flex;
+    justify-content: center; 
+}
+
+.offcanvas-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.offcanvas-body a {
+    display: block;
+    color: black; 
+    padding: 15px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.offcanvas-body a:hover {
+    background-color: #eee; 
+    border-radius: 5px;
+}
+
+.offcanvas-header .btn-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.navbar-third {
+    background-color: white;
+    padding: 10px 0;
+    
+}
+
+.navbar-third .nav-link {
+    font-size: 17px;
+    color: black;
+    padding: 10px 15px;
+    font-weight: bold;
+    margin-right: 20px;
+
+}
+
+.navbar-third .nav-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .navbar-third .nav-link {
+        font-size: 14px;
+    }
+}
+
+
+
+
+ 
+
+
+
+  </style>
+
+  <!-- Google font link -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body id="top">
+
+ <!-- First Navbar -->
+<nav class="navbar navbar-first">
+  <div class="container-fluid">
+    <span class="navbar-text mx-auto">Reduce, Re-use and Recycle.</span>
+  </div>
+</nav>
+
+<!-- Second Navbar -->
+<nav class="navbar navbar-second">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+
+    <!-- Search Form -->
+    <form class="d-flex" action="{% url 'search_products' %}" method="get">
+      <input class="form-control search-input" type="search" name="q" placeholder="Search for products" aria-label="Search" required>
+      <button class="btn search-btn" type="submit">
+        <img src="{% static 'images/search.jpg' %}" alt="Search" class="search-icon">
+      </button>
+    </form>
+
+    <!-- Logo -->
+    <div class="navbar-logo d-flex justify-content-center align-items-center">
+      <a href="">
+        <img src="{% static 'images/logo2.jpg' %}" alt="Eco-Bazaar Logo" class="d-inline-block align-text-top">
+      </a>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="d-flex ms-auto">
+      <a href="" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart"></a>
+      <a href="" class="fas fa-heart me-3 text-decoration-none" title="Wishlist"></a>
+
+      {% if user.is_authenticated %}
+        <a href="/logout" class="btn btn-outline-secondary me-3" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      {% else %}
+        <a href="/login" class="btn btn-outline-secondary me-3" title="Login">
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      {% endif %}
+
+      <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" title="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Offcanvas Menu -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="list-unstyled">
+      <li><a href="" class="d-flex align-items-center text-decoration-none"><i class="fas fa-history me-2"></i> Order History</a></li>
+      <li><a href="" class="d-flex align-items-center text-decoration-none"><i class="fas fa-gift me-2"></i> Refer and Earn</a></li>
+      <li><a href="" class="d-flex align-items-center text-decoration-none"><i class="fas fa-tags me-2"></i> Sale</a></li>
+      <li><a href="" class="d-flex align-items-center text-decoration-none"><i class="fas fa-leaf me-2"></i> Membership</a></li>
+      <li><a href="" class="d-flex align-items-center text-decoration-none"><i class="fas fa-comments me-2"></i> Chatbot</a></li>
+      {% if user.is_authenticated %}
+        <li><a href="/logout" class="d-flex align-items-center text-decoration-none"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+
+<!-- Third Navbar -->
+<nav class="navbar navbar-third navbar-expand-lg">
+  <div class="container-fluid">
+    <div class="navbar-nav mx-auto">
+      <a class="nav-link" href="">Shop</a>
+      <a class="nav-link" href="">Home and Kitchen</a>
+      <a class="nav-link" href="">Beauty</a>
+      <a class="nav-link" href="">Cleaning</a>
+      <a class="nav-link" href="">Clothes</a>
+      <a class="nav-link" href="">Bathroom</a>
+    </div>
+  </div>
+</nav>
+
+
+
+
+<!-- Scripts for icons -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html>
+
+
+
+

@@ -1,0 +1,149 @@
+{% extends 'layouts.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>Register</title>
+{% endblock %}
+
+<style>
+    /* Eco-Friendly Styling */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f4f9f4;
+        color: #2e3a24;
+        margin: 0;
+        padding: 0;
+    }
+
+    .eco-font {
+        font-family: 'Lora', serif;
+        color: #2d6a4f;
+    }
+
+    .eco-box {
+        background-color: #e0f7e8;
+        border: 2px solid #2d6a4f;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #2d6a4f;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    .btn {
+        border-radius: 5px;
+        font-size: 1.1em;
+        padding: 12px;
+        transition: background-color 0.3s;
+        background-color: #2d6a4f;
+        color: #fff;
+        border: none;
+        width: 100%;
+    }
+
+    .btn-success:hover {
+        background-color: #1b5e20;
+    }
+
+    .alert {
+        font-size: 1.1em;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .container {
+        margin-top: 50px;
+        padding: 0 15px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+    }
+
+    .col-md-6, .col-lg-4 {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        color: #2d6a4f;
+        font-weight: bold;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        font-size: 1.1em;
+        padding: 12px;
+        background-color: #2d6a4f;
+        color: white;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #1b5e20;
+    }
+
+    .eco-btn {
+        background-color: #4caf50;
+        font-weight: bold;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .col-md-6 {
+            width: 100%;
+            padding: 15px;
+        }
+    }
+</style>
+
+{% block main-content %}
+<h2 class="text-center my-4 eco-font">Register Form</h2>
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6 col-lg-4 shadow p-4 bg-light-green rounded eco-box">
+            {% for msg in messages %}
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success">
+                        {{msg}}
+                    </div>
+                {% endif %}
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="alert alert-danger">
+                        {{msg}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="my-3">
+                    <input type="submit" value="Register" name="submit" class="btn btn-success w-100 eco-btn">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

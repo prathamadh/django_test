@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <!-- FontAwesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Google Font for a better font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  {% block title %}
+    {{section.title}}
+  {% endblock %}
+  {% load static %}
+
+  <style>
+    /* Apply a modern font from Google Fonts */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #e0f7fa; /* Light green color for eco-friendliness */
+    }
+
+    /* Lighter background for the offcanvas menu */
+    .offcanvas-end {
+      background-color: #a5d6a7; /* Lighter green */
+      border-radius: 10px;
+    }
+
+    .offcanvas-header {
+      background-color: #81c784; /* Soft green */
+      padding: 15px;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .offcanvas-body {
+      padding: 20px;
+    }
+
+    /* User icon color */
+    .img i {
+      color: #388e3c; /* Dark green */
+      font-size: 120px;
+    }
+
+    /* Menu items with hover effects */
+    .offcanvas-body ul li a {
+      display: block;
+      padding: 10px 15px;
+      font-size: 16px;
+      color: #ffffff;
+      text-decoration: none;
+      margin: 5px 0;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .offcanvas-body ul li a:hover {
+      background-color: #66bb6a; /* Lighter green on hover */
+      color: white;
+    }
+
+    /* Buttons style */
+    .btn-success {
+      background-color: #66bb6a;
+      border-color: #66bb6a;
+      font-size: 16px;
+      padding: 8px 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-warning {
+      background-color: #ffeb3b;
+      border-color: #ffeb3b;
+      font-size: 16px;
+      padding: 8px 16px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Button hover effect */
+    .btn-success:hover {
+      background-color: #81c784;
+      border-color: #81c784;
+    }
+
+    .btn-warning:hover {
+      background-color: #fdd835;
+      border-color: #fdd835;
+    }
+
+    /* Styling the logout button */
+    .btn-warning {
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    /* Padding for the user information section */
+    .offcanvas-body ul {
+      padding-left: 0;
+    }
+
+    .offcanvas-body ul li {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="d-flex justify-content-end">
+      <div class="col-md-1 mt-3">
+        <button class="btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+          aria-controls="offcanvasRight">
+          Menu
+        </button>
+        <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasRight"
+          aria-labelledby="offcanvasRightLabel" style="width:300px;">
+          <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">Admin Dashboard</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="list-unstyled">
+              <li><a href="/admins/dashboard">Dashboard</a></li>
+              <li><a href="#">Users</a></li>
+              <li><a href="/products">Products</a></li>
+              <li><a href="/products/addproduct">Add Product</a></li>
+              <li><a href="/products/categories">Categories</a></li>
+              <li><a href="/products/addcategory">Add Categories</a></li>
+              <li><a href="/admins/orders">Orders</a></li>
+            </ul>
+          </div>
+          <div class="offcanvas-body">
+            <!-- <ul class="list-unstyled">
+              <li><a href="#"><b>Name : </b> admin</a></li>
+              <li><a href="#"><b>Email : </b> admin@gmail.com</a></li>
+            </ul> -->
+            <div class="img">
+              <i class="fa fa-user-circle"></i>
+            </div>
+            <a href="/logout" class="btn btn-warning text-decoration-none">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% block main-content %}
+  {% endblock %}
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

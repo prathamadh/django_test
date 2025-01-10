@@ -1,0 +1,45 @@
+{% extends 'layouts.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title> Add Products</title>
+{% endblock %}
+
+
+{% block main-content %}
+<h2 class="text-center">Add Products</h2>
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-8">
+            {%for msg in messages %}
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alert alert-success">
+                        {{msg}}
+                    </div>
+
+                {% endif %}
+
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger">
+                    {{msg}}
+                </div>
+
+            {% endif %}
+
+
+            {% endfor %}
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="my-2">
+                    <input type="submit" value="Add" name="add" class="btn btn-primary" >
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

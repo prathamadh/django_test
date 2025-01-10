@@ -1,0 +1,62 @@
+{% extends 'layouts.html' %}
+{% load static %}
+{% block title %}
+<title>Categories</title>
+{% endblock %}
+
+{% block main-content %}
+<h2 class="text-center">All Categories</h2>
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-5">
+            {% for msg in messages %}
+
+            {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success">
+                    {{msg}}
+                </div>
+
+
+            {% endif %}
+
+            {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR  %}
+                <div class="alert alert-danger">
+                    {{msg}}
+                </div>
+
+
+            {% endif %}
+
+        {% endfor %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th> CategoryName</th>
+                        
+                        <th>Action</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in categories %}
+                    <tr>
+                        <td>{{item.category_name}}</td>
+                        
+                        
+                        <td>
+                            <a href="/products/updatecategory/{{item.id}}" class="btn btn-primary"> <i class="fa-solid fa-pen-to-square"></i></a>
+                            
+                            <a href="/products/deletecategory/{{item.id}}" class="btn btn-danger" onclick="return confirm('Are you sure want to delete this category')">
+                                 <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

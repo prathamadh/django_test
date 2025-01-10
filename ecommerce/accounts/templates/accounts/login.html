@@ -1,0 +1,93 @@
+{% extends 'layouts.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block main-content %}
+<style>
+    /* Background styling */
+    body {
+    background-color: #e0f7fa;
+    
+    font-family: 'Arial', sans-serif;
+}
+    .login-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        margin-top: 50px;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .login-title {
+        color: #2e7d32; /* Dark green for eco-theme */
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .btn-login {
+        background-color: #43a047; /* Eco-friendly green */
+        border: none;
+        color: white;
+        font-weight: bold;
+        width: 100%;
+    }
+    .btn-login:hover {
+        background-color: #388e3c;
+        transition: 0.3s;
+    }
+    a.signup-link {
+        color: #2e7d32;
+        font-weight: bold;
+    }
+    a.signup-link:hover {
+        text-decoration: underline;
+        color: #1b5e20;
+    }
+    /* Fade-in animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="col-md-5 login-container">
+        <h2 class="login-title">Welcome !</h2>
+        {% for msg in messages %}
+            {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> {{ msg }}
+                </div>
+            {% endif %}
+            {% if msg.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> {{ msg }}
+                </div>
+            {% endif %}
+        {% endfor %}
+        
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-3">
+            <p>Don't have an account? <a href="/register" class="signup-link">Sign up here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
