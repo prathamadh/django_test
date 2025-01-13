@@ -136,28 +136,31 @@
     font-size: 1.8rem;
     transition: color 0.3s ease;
 }
-
-.d-flex .fa-shopping-cart {
-    color:rgb(219, 159, 49)
-
+.d-flex .fa-shopping-cart,
+.d-flex .fa-heart,
+.d-flex .fa-user {
+  color: rgb(219, 159, 49); /* Consistent icon color */
+  font-size: 1.5rem;       /* Adjust size for better alignment */
 }
 
-.d-flex .fa-user-circle {
-    color: rgb(219, 159, 49)
-}
-
-.d-flex .fa-heart {
-    color: rgb(219, 159, 49)
+.d-flex a {
+  display: flex;           /* Ensures proper alignment */
+  align-items: center;
+  justify-content: center;
 }
 
 .d-flex a:hover {
-    color: black
+  color: black;            /* Hover effect */
 }
 
 .d-flex .me-3 {
-    margin-left: 1rem;
-    position: relative;
-    right: 40px;
+  margin-right: 1rem;      /* Proper spacing between icons */
+  position: static;        /* Remove conflicting positioning */
+}
+
+.d-flex .btn-outline-secondary {
+  border: none; /* Removes the border */
+  
 }
 
 .btn-outline-secondary {
@@ -266,29 +269,29 @@
     <form class="d-flex" action="{% url 'search_products' %}" method="get">
       <input class="form-control search-input" type="search" name="q" placeholder="Search for products" aria-label="Search" required>
       <button class="btn search-btn" type="submit">
-        <img src="{% static 'images/search.jpg' %}" alt="Search" class="search-icon">
+        <i class="fa fa-search"></i>
       </button>
     </form>
 
     <!-- Logo -->
     <div class="navbar-logo d-flex justify-content-center align-items-center">
       <a href="">
-        <img src="{% static 'images/logo2.jpg' %}" alt="Eco-Bazaar Logo" class="d-inline-block align-text-top">
+        <img src="{% static 'images/logo.png' %}" alt="Eco-Bazaar Logo" class="d-inline-block align-text-top">
       </a>
     </div>
 
     <!-- Header Actions -->
     <div class="d-flex ms-auto">
-      <a href="" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart"></a>
+      <a href="/cart" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart"></a>
       <a href="" class="fas fa-heart me-3 text-decoration-none" title="Wishlist"></a>
 
       {% if user.is_authenticated %}
         <a href="/logout" class="btn btn-outline-secondary me-3" title="Logout">
-          <i class="fas fa-sign-out-alt"></i>
+          <i class="fa-solid fa-user"></i>
         </a>
       {% else %}
         <a href="/login" class="btn btn-outline-secondary me-3" title="Login">
-          <i class="fas fa-sign-out-alt"></i>
+          <i class="fa-solid fa-user"></i>
         </a>
       {% endif %}
 
@@ -324,7 +327,7 @@
 <nav class="navbar navbar-third navbar-expand-lg">
   <div class="container-fluid">
     <div class="navbar-nav mx-auto">
-      <a class="nav-link" href="">Shop</a>
+      <a href='/' class="nav-link" href="">Shop</a>
       <a class="nav-link" href="">Home and Kitchen</a>
       <a class="nav-link" href="">Beauty</a>
       <a class="nav-link" href="">Cleaning</a>

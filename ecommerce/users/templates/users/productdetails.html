@@ -10,51 +10,36 @@
 
 {% include 'users/header.html' %}
 
-<!-- product description section -->
- <div class="container my-3" >
-  <div class="row-d-flex justify-content-between align-item-center">
-    <div class="col-md-3">
-          <img src="/{{product.product_image}}" alt="{{product.product_name}}" width="400">
-    </div>
-    <div class="col-md-8">
-      <h1>{{product.product_name}}</h1>
-      <h3>Rs.{{product.product_price}}</h3>
-      <strong> Avaiable Stock : {{product.stock}}</strong>
-      <br>
-      <strong>Category: {{product.category}}</strong>
-      <br>
-      <p>{{product.product_description}}</p>
-
-      <div class="my-3">
-        <a href="/addtocart/{{product.id}}" class="btn btn-warning">Add to Cart</a>
+<!-- start of product section -->
+<div class="container my-3">
+  <div class="row d-flex justify-content-between align-items-center">
+      <div class="col-md-3">
+          <img src="/{{product.product_image}}" alt="{{product.product_name}} " width="400px">
       </div>
+      <div class="col-md-8">
+          <h1>{{product.product_name}}</h1>
+          <h3 class="text-success">Rs.{{product.product_price}}</h3>
+          <strong> Available Stock :{{product.stock}}</strong>
+          <br>
+          <strong> Category : {{product.category}}</strong>
+          <br>
+          <p>{{product.product_description}}</p>
+          <div class="my-3">
+              <a href="/addtocart/{{product.id}}" class="btn btn-warning"> Add To Cart</a>
+          </div>
 
-    </div>
+
+      </div>
   </div>
- </div>
-<!-- product description section -->
+
+</div>
+
+
+<!-- end of product section -->
 
 
 
-<!-- start of product section -->
-<!-- <div class="product-page">
-    <div class="product-main">
-      <div class="product-image-section">
-        <img src="{{product.product_name}}" alt="bagpacks" class="main-image">
-      </div>
-      <div class="product-info">
-        <h1 class="product-title">Bagpacks</h1>
-        <p class="product-price">Rs 160</p>
-        <p class="product-description">Eco-friendly and sustainable, this Organic Backpack is made from 100% recycled materials. Designed to provide durability and comfort, it's perfect for everyday use, travel, or outdoor adventures. Its spacious compartments and ergonomic straps ensure a practical and stylish solution for carrying your essentials while helping the planet.</p>
-        <div class="add-to-cart">
-          <label for="quantity" class="quantity-label">Quantity:</label>
-          <input type="number" id="quantity" value="1" min="1" class="quantity-input">
-          <button class="cart-button">Add to Cart</button>
-        </div>
-      </div>
-    </div>
-  </div> -->
-<!-- start of product section -->
+
 
 
 {% include 'users/footer.html' %}

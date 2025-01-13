@@ -27,7 +27,9 @@ def post_product(request):
         if form.is_valid():
             form.save()
             messages.add_message(request,messages.SUCCESS,'Product added.')
-            return redirect('products/addproduct')
+            # return redirect('products/addproduct')
+            return redirect('products:addproduct')
+
         else:
             messages.add_message(request,messages.ERROR,'failed to add product.')
             return render(request,'products/addproduct.html',{'form':form})

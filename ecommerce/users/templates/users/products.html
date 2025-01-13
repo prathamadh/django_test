@@ -11,147 +11,8 @@
 {% include 'users/header.html' %}
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
-</head>
-<body>
-  <style>
-    /* General styling for the container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
-}
-
-/* Styling for the product card */
-.card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.card-img-top {
-  height: 200px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.card-img-top:hover {
-  transform: scale(1.05);
-}
-
-.card-body {
-  padding: 20px;
-}
-
-.card-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.card-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.price {
-  font-size: 1.2rem;
-  color: #e74c3c;
-  margin-bottom: 15px;
-  font-weight: 500;
-}
-
-.btn {
-  font-size: 0.9rem;
-  padding: 10px 15px;
-  border-radius: 5px;
-  text-align: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* View Details Button */
-.btn-primary {
-  background-color: #3498db;
-  border-color: #3498db;
-}
-
-.btn-primary:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
-  color: #fff;
-}
-
-/* Add to Cart Button */
-.btn-outline-primary {
-  border-color: #3498db;
-  color: #3498db;
-  background-color: transparent;
-}
-
-.btn-outline-primary:hover {
-  background-color: #3498db;
-  color: #fff;
-}
-
-/* Responsive Design: Ensure the cards look good on mobile and tablet */
-/* @media (max-width: 768px) {
-  .row-cols-md-4 {
-    row-cols-2
-  }
-}
-
-@media (max-width: 576px) {
-  .row-cols-md-4 {
-    row-cols-1
-  }
-} */
-
-
-  </style>
-</body>
-</html>
-
-
 <!-- start of product section -->
-<!-- <section class="product-container"> -->
-  <!-- Loop through products passed in context -->
-  <!-- {% for item in products %}
-  <div class="product"> -->
-    <!-- Display dynamic product image -->
-    <!-- <img src="{{ item.image_url.url }}" alt="{{ item.name }}">
-    
-    <div class="product-info"> -->
-      <!-- Dynamic product name -->
-      <!-- <h2>{{ item.name }}</h2>
-      
-      <div class="price-add-to-cart"> -->
-        <!-- Dynamic product price -->
-        <!-- <p class="price">Rs {{ item.price }}</p> -->
-        
-        <!-- Add to cart button -->
-        <!-- <button class="add-to-cart">Add to Cart</button>
-        <a href="" class="btn btn-primary">View Details</a>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</section> -->
-
-<!-- start of product section -->
-<!-- <div class="container-fluid">
+<div class="container-fluid">
   <div class="row row-cols-1 row-cols-md-4 g-4">
   {% for item in products %}
     <div class="col">
@@ -161,9 +22,8 @@
       <div class="card-body">
         <h5 class="card-title">{{item.product_name}}</h5>
         <h3>Rs.{{item.product_price}}</h3>
-        <button class="btn btn-primary">View Details</button>
-
         <a href="/productdetails/{{item.id}}" class="btn btn-primary">View Deatils</a>
+
       </div>
    
     </div>
@@ -171,51 +31,24 @@
   </div>
   {% endfor %}
 </div>
-</div> -->
-
-<!-- <div class="container-fluid">
-  <div class="row row-cols-1 row-cols-md-4 g-4">
-    {% for item in products %}
-    <div class="col">
-      <div class="card">
-        <img src="/{{ item.product_image }}" class="card-img-top" alt="{{ item.product_name }}">
-        <div class="card-body">
-          <h5 class="card-title">{{ item.product_name }}</h5>
-          <h3>Rs.{{ item.product_price }}</h3>
-          <a href="/productdetails/{{ item.id }}" class="btn btn-primary">View Details</a>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div> -->
-
-<div class="container my-5">
-  <div class="row row-cols-1 row-cols-md-4 g-4">
-    {% for product in products %}
-      <div class="col">
-        <div class="card">
-          <img src="/{{ item.product_image }}" class="card-img-top" alt="{{ item.product_name }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ item.product_name }}</h5>
-            <div class="card-text">
-              <span class="price">Rs {{ item.product_price }}</span>
-              <a href="/productdetails/{{ item.id }}" class="btn btn-primary">View Details</a>
-              <a href="#" class="btn btn-primary">Add to Cart</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
 </div>
+
+  
+<!-- end of product section -->
+
+
+
+
+
+
+
 
 
 
 
 
   
-<!-- end of product section -->
+
 
 
 {% include 'users/footer.html' %}
