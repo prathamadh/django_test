@@ -90,7 +90,7 @@
         
         // Loop through all items in the cart
         document.querySelectorAll('.total-price').forEach(priceElement => {
-            const price = parseFloat(priceElement.textContent.replace('$', '')) || 0;
+            const price = parseFloat(priceElement.textContent.replace('Rs', '')) || 0;
             totalAmount += price;
         });
 

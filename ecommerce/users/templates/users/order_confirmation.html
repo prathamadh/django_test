@@ -1,0 +1,41 @@
+<!-- users/order_confirmation.html -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <h1>Order Confirmation</h1>
+    <p>Your order has been placed successfully!</p>
+    <a href="/">Go to Home</a>
+</body>
+</html> -->
+
+{% extends 'layouts.html' %}
+{% block title %}
+    <title>Order Confirmation</title>
+{% endblock %}
+
+{% block main-content %}
+    {% include 'users/header.html' %}
+
+    <div class="container my-5">
+        <h2 class="text-center">Order Confirmation</h2>
+
+        <div class="alert alert-success">
+            <strong>Success!</strong> Your payment was successful, and your order has been confirmed.
+        </div>
+
+        <h4>Order Details:</h4>
+        <p><strong>Order ID:</strong> {{ order.id }}</p>
+        <p><strong>Total Amount:</strong> Rs{{ order.total_price }}</p>
+
+        <a href="/myorder" class="btn btn-primary">View My Orders</a>
+    </div>
+
+    {% include 'users/footer.html' %}
+{% endblock %}
+
+
