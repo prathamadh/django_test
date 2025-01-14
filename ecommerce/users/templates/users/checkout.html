@@ -1,0 +1,87 @@
+{% extends 'layouts.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Checkout</title>
+{% endblock %}
+
+{% block main-content %}
+    {% include 'users/header.html' %}
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="text-center">Checkout</h2>
+
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Checkout Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <!-- Order Items Display -->
+                    <h4>Order Items:</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_items %}
+                                <tr>
+                                    <td>{{ item.product.product_name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>${{ item.unit_price|floatformat:2 }}</td>
+                                    <td>${{ item.total_price|floatformat:2 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="text-right">
+                        <h4><strong>Total: Rs{{ total_price|floatformat:2 }}</strong></h4>
+                    </div>
+
+                    <!-- Address Input -->
+                    <div class="form-group">
+                        <label for="address">Shipping Address</label>
+                        <textarea class="form-control" id="address" name="address" required placeholder="Enter your shipping address..."></textarea>
+                    </div>
+
+                    <!-- Contact Number Input -->
+                    <div class="form-group">
+                        <label for="contact_no">Contact Number</label>
+                        <input type="text" class="form-control" id="contact_no" name="contact_no" required placeholder="Enter your contact number">
+                    </div>
+
+                    <!-- Payment Method Input -->
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select class="form-control" id="payment_method" name="payment_method" required>
+                            <option value="credit_card">Esewa</option>
+                            <option value="paypal">khalti</option>
+                            <option value="cash_on_delivery">Cash on Delivery</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-success btn-block" style="margin-top: 20px;">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% include 'users/footer.html' %}
+{% endblock %}
