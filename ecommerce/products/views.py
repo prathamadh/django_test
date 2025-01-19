@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from .models import Product,Category
 from .forms import ProductForm,CategoryForm
@@ -92,15 +92,37 @@ def post_category(request):
     }
     return render(request,'products/addcategory.html',context)
 
+
+
+
 @login_required
-@admin_only
-def show_category(request):
-    #fetch data from the table
-    categories=Category.objects.all()
-    context={
-        'categories':categories
+
+ 
+
+
+def show_category(request, category_id=None):
+    # Fetch all categories
+    categories = Category.objects.all()
+    
+    # If category_id is passed, filter products based on the category
+    if category_id:
+        category = get_object_or_404(Category, id=category_id)
+        products = Product.objects.filter(category=category)
+    else:
+        # If no category is selected, show all products
+        products = Product.objects.all()
+
+    context = {
+        'categories': categories,  # Pass all categories to the template
+        'products': products,     # Pass filtered products based on the selected category
     }
-    return render(request,'products/categories.html',context)
+    
+    return render(request, 'products/category_product.html', context)
+
+
+    
+
+
 
 
 @login_required
@@ -113,7 +135,7 @@ def update_category(request,category_id):
         if form.is_valid():
             form.save()
             messages.add_message(request,messages.SUCCESS,'Catgeory update.')
-            return redirect("/products/categoriespy")
+            return redirect("/products/categories")
         else:
             messages.add_message(request,messages.ERROR,'Failed to update category .')
             return render(request,'/products/updatecategory.html',{'form':form})

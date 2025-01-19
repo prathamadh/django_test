@@ -1,3 +1,4 @@
+from django.views import View
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -7,23 +8,28 @@ import hmac
 import hashlib
 import uuid
 import base64
-import json
 import requests
+from django.shortcuts import redirect, get_object_or_404
+from products.models import Product, Category
+from .models import Cart, Order,  OrderItem
 
-from products.models import Product
-from .models import Cart, Order, Membership, OrderItem
-from .forms import OrderForm
-from django.views import View
+
+
 
 
 # Create your views here.
 
+
 def index(request):
-    products = Product.objects.all().order_by('-id')[:8]  # Show latest 8 products
+    products = Product.objects.all().order_by('-id') 
+    categories = Category.objects.all()  
     context = {
-        'products': products
+        'products': products,
+        'categories': categories  
     }
     return render(request, 'users/index.html', context)
+
+
 
 def products(request):
     products = Product.objects.all()
@@ -39,51 +45,35 @@ def productdetails(request, product_id):
     }
     return render(request, 'users/productdetails.html', context)
 
-@login_required
-def add_to_cart(request, product_id):
-    user = request.user
-    product = Product.objects.get(id=product_id)
-    
-    # Check if the product is already in the cart for the user
-    check_items_presence = Cart.objects.filter(user=user, product=product)
 
-    if check_items_presence.exists():
-        messages.error(request, 'Product is already in the cart.')
+
+
+def number_of_items(request):
+    # Ensure the user is authenticated
+    user = request.user if request.user.is_authenticated else None
+    return render(request, 'cart.html', {'user': user}) 
+
+@login_required
+def add_to_cart(request,product_id):
+    user=request.user
+    product=Product.objects.get(id=product_id)
+    check_items_presence=Cart.objects.filter(user=user,product=product)
+    if(check_items_presence):
+        messages.add_message(request,messages.ERROR,'product is already in the cart.')
         return redirect('/productlist')
     else:
-        # Add product to the cart if it's not already there
-        cart = Cart.objects.create(product=product, user=user)
-        
+        cart=Cart.objects.create(product=product,user=user)
         if cart:
-            messages.success(request, 'Product added to the cart successfully.')
-            
-            # Get the number of items in the user's cart
-            cart_item_count = Cart.objects.filter(user=user).count()
-            
-            # Optionally, return a JSON response with the updated cart item count
-            if request.is_ajax():
-                return JsonResponse({'item_count': cart_item_count})
-            
+            messages.add_message(request,messages.SUCCESS,'product added to the cart successfully.')
             return redirect('/cart')
         else:
-            messages.error(request, 'Something went wrong.')
-            return redirect('/productlist')
-# def add_to_cart(request, product_id):
-#     user = request.user
-#     product = Product.objects.get(id=product_id)
-#     check_items_presence = Cart.objects.filter(user=user, product=product)
+            messages.add_message(request.messages.ERROR,'Something went wrong.')
 
-#     if check_items_presence:
-#         messages.error(request, 'Product is already in the cart.')
-#         return redirect('/productlist')
-#     else:
-#         cart = Cart.objects.create(product=product, user=user)
-#         if cart:
-#             messages.success(request, 'Product added to the cart successfully.')
-#             return redirect('/cart')
-#         else:
-#             messages.error(request, 'Something went wrong.')
-#             return redirect('/productlist')
+
+
+
+
+
 
 @login_required
 def show_cart_items(request):
@@ -106,8 +96,10 @@ def show_cart_items(request):
 def checkout(request):
     user_cart_items = Cart.objects.filter(user=request.user)
     
+    # Calculate the total price of all items in the cart
     total_price = sum(item.product.product_price * item.quantity for item in user_cart_items)
 
+    # Prepare order items summary for display or processing
     order_items = [
         {
             'product': item.product,
@@ -119,11 +111,12 @@ def checkout(request):
     ]
 
     if request.method == 'POST':
-        address = request.POST['address']
-        contact_no = request.POST['contact_no']
-        payment_method = request.POST['payment_method']
+        # Get data from the form
+        address = request.POST.get('address')
+        contact_no = request.POST.get('contact_no')
+        payment_method = request.POST.get('payment_method')
 
-        # Create the order first
+        # Create the order
         order = Order.objects.create(
             user=request.user,
             total_price=total_price,
@@ -133,7 +126,7 @@ def checkout(request):
             payment_status=False  # Initially, the payment status is set to False (pending).
         )
 
-        # Create Order Items
+        # Create order items
         for item in user_cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -142,22 +135,36 @@ def checkout(request):
                 total_price=item.product.product_price * item.quantity
             )
 
-        # Delete items from cart after the order is created
+        # Delete items from the cart after the order is created
         user_cart_items.delete()
+        
 
-        # Redirect to respective payment gateway based on selected payment method
-        if payment_method == 'Esewa':
-            # Redirect to the Esewa payment form
-            return redirect(reverse('esewaform') + f"?o_id={order.id}&c_id={order.id}")
+        # Handle payment method-specific logic
+        if order.payment_method == 'Cash on Delivery':
+            messages.add_message(request, messages.SUCCESS, 'Order successfully placed.')
+            return redirect('/myorder')
+        
+        elif order.payment_method == 'Esewa':
+            # Check if the cart is not empty
+            if user_cart_items.exists():
+                
+                # Redirect to the esewa payment page with order_id and cart_id
+                return redirect(reverse('esewaform', args=[order.id, user_cart_items.first().id]))
+            else:
+                messages.add_message(request, messages.ERROR, 'Cart is empty.')
+                return redirect('cart')
+        
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed to place the order.')
+            return render(request, 'users/checkout.html', {'order_items': order_items})
 
-        elif payment_method == 'Khalti':
-            # Redirect to the Khalti payment form
-            return redirect(reverse('khaltiform') + f"?o_id={order.id}&c_id={order.id}")
+    # Handle GET request by rendering the checkout page
+    return render(request, 'users/checkout.html', {
+        'order_items': order_items,
+        'total_price': total_price
+    })
 
-        messages.success(request, 'Order placed successfully. Please complete the payment.')
-        return redirect('order_confirmation')  # You can redirect to a success page here after payment
 
-    return render(request, 'users/checkout.html', {'order_items': order_items, 'total_price': total_price})
 
 
 
@@ -179,224 +186,105 @@ def remove_cart_item(request, cart_id):
 @login_required
 
 
-def order_form(request, product_id, cart_id):
-    # Fetch the product and cart details
-    product = Product.objects.get(id=product_id)
-    cart_item = Cart.objects.get(id=cart_id)
-    total_price = cart_item.product.product_price * cart_item.quantity
-
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            # Retrieve data from the form
-            address = form.cleaned_data['address']
-            contact_no = form.cleaned_data['contact_no']
-            payment_method = form.cleaned_data['payment_method']
-
-            # Create the order
-            order = Order.objects.create(
-                user=request.user,
-                total_price=total_price,
-                payment_method=payment_method,
-                contact_no=contact_no,
-                address=address,
-                payment_status=False  # Initially set to False (pending)
-            )
-
-            # Create an order item for this product
-            OrderItem.objects.create(
-                order=order,
-                product=cart_item.product,
-                quantity=cart_item.quantity,
-                total_price=total_price
-            )
-
-            # Delete the cart item after the order is created
-            cart_item.delete()
-
-            # Redirect to the eSewa payment form if payment method is 'Esewa'
-            if payment_method == 'Esewa':
-                esewa_url = reverse('esewaform') + f"?o_id={order.id}"
-                return redirect(esewa_url)
-
-            # For Cash on Delivery
-            elif payment_method == 'Cash on Delivery':
-                messages.success(request, 'Order placed successfully. Please pay on delivery.')
-                return redirect('/myorder')  # Redirect to the order summary page
-
-            else:
-                messages.error(request, 'Invalid payment method selected.')
-                return render(request, 'users/orderform.html', {'form': form})
-
-        else:
-            messages.error(request, 'Please correct the errors in the form.')
-
-    else:
-        form = OrderForm()
-
-    # Context for the template
-    context = {
-        'form': form,
-        'product': product,
-        'quantity': cart_item.quantity,
-        'unit_price': product.product_price,
-        'total_price': total_price,
-    }
-    return render(request, 'users/orderform.html', context)
-
-
-# @login_required
-# def process_order(request, order_id):
-#     order = Order.objects.get(id=order_id)
-#     user_membership = Membership.objects.get(user=request.user)
-
-#     user_membership.total_purchase_amount += order.total_price
-#     user_membership.save()
-
-#     if user_membership.total_purchase_amount >= 20000:
-#         user_membership.membership_type = 'Higher'
-#     elif user_membership.total_purchase_amount >= 10000:
-#         user_membership.membership_type = 'Secondary'
-#     elif user_membership.total_purchase_amount >= 5000:
-#         user_membership.membership_type = 'Primary'
-#     else:
-#         user_membership.membership_type = 'General'
-
-#     user_membership.save()
-#     return render(request, 'myorder.html', {'order': order})
 
 
 
 
-class EsewaView(View):
-    def get(self,request,*args,**kwargs):
-        o_id=request.GET.get('o_id')
-        c_id=request.GET.get('c_id')
-        cart=Cart.objects.get(id=c_id)
-        order=Order.objects.get(id=o_id)
 
-        uuid_val=uuid.uuid4()
+class EsewaPaymentView(View):
+    def get(self, request, *args, **kwargs):
+        o_id = request.GET.get('o_id')
+        c_id = request.GET.get('c_id')
+        
+        try:
+            cart = Cart.objects.filter(id=c_id)
+            order = Order.objects.get(id=o_id)
+        except Cart.DoesNotExist:
+            messages.error(request, 'Cart not found.')
+            return redirect('cart')
+        except Order.DoesNotExist:
+            messages.error(request, 'Order not found.')
+            return redirect('orders')
 
-        def genSha256(key,message):
-            key=key.encode('utf-8')
-            message=message.encode('utf-8')
-            hmac_sha256=hmac.new(key,message,hashlib.sha256)
+        # Calculate total price from the cart items
+        total_price = sum(cart_item.product.product_price * cart_item.quantity for cart_item in cart)
 
-            digest=hmac_sha256.digest()
+        # Generate UUID for the transaction
+        uuid_val = uuid.uuid4()
 
-            signature=base64.b64encode(digest).decode('utf-8')
+        def genSha256(key, message):
+            key = key.encode('utf-8')
+            message = message.encode('utf-8')
+            hmac_sha256 = hmac.new(key, message, hashlib.sha256)
+            digest = hmac_sha256.digest()
+            signature = base64.b64encode(digest).decode('utf-8')
             return signature
         
-        secret_key='8gBm/:&EnhH.1/q'
-        data_to_assign=f"total_amount={order.total_price},transaction_uuid={uuid_val},product_code=EPAYTEST"
+        secret_key = '8gBm/:&EnhH.1/q'
+        data_to_assign = f"total_amount={total_price},transaction_uuid={uuid_val},product_code=EPAYTEST"
 
-        result=genSha256(secret_key,data_to_assign)
+        result = genSha256(secret_key, data_to_assign)
 
-        data={
-            'amount':order.product.product_price,
-            'total_amount':order.total_price,
-            'transaction_uuid':uuid_val,
-            'product_code':'EPAYTEST',
-            'signature':result
+        data = {
+            'amount': total_price,
+            'total_amount': total_price,
+            'transaction_uuid': uuid_val,
+            'product_code': 'EPAYTEST',
+            'signature': result
         }
-        context={
-            'order':order,
-            'data':data,
-            'cart':cart
-        }
-        return render(request,'users/esewaform.html',context)
-    
 
+        context = {
+            'order': order,
+            'data': data,
+            'cart': cart
+        }
+
+        return render(request, 'users/esewaform.html', context)
 import json
 @login_required
-def esewa_verify(request,order_id,cart_id):
-    if request.method=="GET":
-        data=request.GET.get('data')
-        decoded_data=base64.b64decode(data).decode()
-        map_data=json.loads(decoded_data)
-        order=Order.objects.get(id=order_id)
-        cart=Cart.objects.get(id=cart_id)
+def esewa_verify(request, order_id, cart_id):
+    if request.method == "GET":
+        data = request.GET.get('data')
+        decoded_data = base64.b64decode(data).decode()
+        map_data = json.loads(decoded_data)
+        
+        try:
+            order = Order.objects.get(id=order_id)
+            cart = Cart.objects.get(id=cart_id)
+        except Order.DoesNotExist:
+            messages.error(request, 'Order not found.')
+            return redirect('orders')
+        except Cart.DoesNotExist:
+            messages.error(request, 'Cart not found.')
+            return redirect('cart')
 
-        if map_data.get('status')=='COMPLETE':
-            order.payment_status=True
+        if map_data.get('status') == 'COMPLETE':
+            order.payment_status = True
             order.save()
             cart.delete()
-            messages.add_message(request,messages.SUCCESS,'Payment successful.')
+            messages.success(request, 'Payment successful.')
             return redirect('/myorder')
-        
         else:
-            messages.add_message(request,messages.ERROR,'Failed to make payment')
+            messages.error(request, 'Failed to make payment')
             return redirect('/myorder')
+
+# In views.py
+from django.http import HttpResponse
+from django.views import View
+
+class TestView(View):
+    def get(self, request):
+        return HttpResponse('This is a test view')
+
+
+
+
+
+
 
 
  
-# class EsewaView(View):
-#     def get(self,request,*args,**kwargs):
-#         o_id=request.GET.get('o_id')
-#         c_id=request.GET.get('c_id')
-#         # cart=Cart.objects.get(id=c_id)
-#         try:
-#             cart = Cart.objects.get(product_id=o_id, user_id=c_id)
 
-#         except Cart.DoesNotExist:
-#             return HttpResponse("Cart not found")
-
-
-
-#         order=Order.objects.get(id=o_id)
-
-#         uuid_val=uuid.uuid4()
-
-#         def genSha256(key,message):
-#             key=key.encode('utf-8')
-#             message=message.encode('utf-8')
-#             hmac_sha256=hmac.new(key,message,hashlib.sha256)
-
-#             digest=hmac_sha256.digest()
-
-#             signature=base64.b64encode(digest).decode('utf-8')
-#             return signature
-        
-#         secret_key='8gBm/:&EnhH.1/q'
-#         data_to_assign=f"total_amount={order.total_price},transaction_uuid={uuid_val},product_code=EPAYTEST"
-
-#         result=genSha256(secret_key,data_to_assign)
-
-#         data={
-#             'amount':order.product.product_price,
-#             'total_amount':order.total_price,
-#             'transaction_uuid':uuid_val,
-#             'product_code':'EPAYTEST',
-#             'signature':result
-#         }
-#         context={
-#             'order':order,
-#             'data':data,
-#             'cart':cart
-#         }
-#         return render(request,'users/esewaform.html',context)
-    
-
-# import json
-# @login_required
-# def esewa_verify(request,order_id,cart_id):
-#     if request.method=="GET":
-#         data=request.GET.get('data')
-#         decoded_data=base64.b64decode(data).decode()
-#         map_data=json.loads(decoded_data)
-#         order=Order.objects.get(id=order_id)
-#         cart=Cart.objects.get(id=cart_id)
-
-#         if map_data.get('status')=='COMPLETE':
-#             order.payment_status=True
-#             order.save()
-#             cart.delete()
-#             messages.add_message(request,messages.SUCCESS,'Payment successful.')
-#             return redirect('/myorder')
-        
-#         else:
-#             messages.add_message(request,messages.ERROR,'Failed to make payment')
-#             return redirect('/myorder')
 
 
 

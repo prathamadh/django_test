@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+APPEND_SLASH = True
+
 
 # Application definition
 import os
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'accounts',
     'adminspage',
+    
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
