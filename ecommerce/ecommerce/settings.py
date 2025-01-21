@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'accounts',
     'adminspage',
+    'recommendation'
     
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
@@ -145,3 +146,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '1dcb-27-34-65-29.ngrok-free.app'
+]

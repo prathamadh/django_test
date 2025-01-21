@@ -1,0 +1,14 @@
+<h1>Recommendations for {{ user_id }}</h1>
+<h2>Your Interactions</h2>
+<ul>
+    {% for interaction in interactions %}
+        <li>{{ interaction.product_id }} (Action: {{ interaction.action }})</li>
+    {% endfor %}
+</ul>
+
+<h2>Recommended Products</h2>
+<ul>
+    {% for recommendation in recommendations %}
+        <li>{{ recommendation.product_id }}</li>
+    {% endfor %}
+</ul>

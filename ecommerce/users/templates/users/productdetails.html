@@ -14,7 +14,7 @@
 <div class="container my-3">
   <div class="row d-flex justify-content-between align-items-center">
       <div class="col-md-3">
-          <img src="/{{product.product_image}}" alt="{{product.product_name}} " width="400px">
+          <img src="/{{product.product_image}}" alt="{{product.product_name}} " class="product-image">
       </div>
       <div class="col-md-8">
           <h1>{{product.product_name}}</h1>
@@ -75,7 +75,13 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
 }
 
-
+.product-image {
+    width: 300px; 
+    height: 300px; 
+    object-fit: cover; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+  }
 
 
 </style>

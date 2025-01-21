@@ -96,28 +96,14 @@ def post_category(request):
 
 
 @login_required
-
- 
-
-
-def show_category(request, category_id=None):
-    # Fetch all categories
-    categories = Category.objects.all()
-    
-    # If category_id is passed, filter products based on the category
-    if category_id:
-        category = get_object_or_404(Category, id=category_id)
-        products = Product.objects.filter(category=category)
-    else:
-        # If no category is selected, show all products
-        products = Product.objects.all()
-
-    context = {
-        'categories': categories,  # Pass all categories to the template
-        'products': products,     # Pass filtered products based on the selected category
+@admin_only
+def show_category(request):
+    #fetch data from the table
+    categories=Category.objects.all()
+    context={
+        'categories':categories
     }
-    
-    return render(request, 'products/category_product.html', context)
+    return render(request,'products/categories.html',context)
 
 
     

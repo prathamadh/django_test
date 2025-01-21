@@ -1,0 +1,35 @@
+{% extends 'admins/layout.html' %}
+
+{% block main-content %}
+  <div class="container-fluid">
+    <h2 class="text-center my-3 text-muted">Logged-in Users</h2>
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <!-- <th>Email</th> -->
+              <th>Date Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in logged_in_users %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <!-- <td>{{ user.email }}</td> -->
+                <td>{{ user.date_joined }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="4">No users found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

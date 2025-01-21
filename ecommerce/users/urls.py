@@ -24,30 +24,21 @@ urlpatterns=[
     
     # Add new path for checkout (bulk order handling)
     path('checkout/', views.checkout, name='checkout'),
+
     path('order/confirmation/', views.order_confirmation, name='order_confirmation'),
-    # In urls.py
-
-    path('test/', TestView.as_view(), name='test'),
-
-
-
-
-
-
-
-
-  
-
-
-
-   
-   
-
-
-   
-
-
+    path('category/<int:category_id>/products/', views.show_category, name='category_product'),
     
-
  
+    path('wishlist/', views.wishlist_view, name='wishlist'),
+    path('addtowishlist/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('removefromwishlist/<int:item_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+
+
+
+
+
+
+
+
+
 ]

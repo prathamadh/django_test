@@ -37,10 +37,11 @@ urlpatterns = [
     path('deleteproducts/<int:product_id>/', delete_product, name='deleteproduct'),
     path('addcategory/', post_category, name='addcategory'),
     path('categories/', show_category, name='categories'),
-    path('categories/<int:category_id>/products/', views.show_category, name='category_product'),  # This line is correct
     path('updatecategory/<int:category_id>/', update_category, name='updatecategory'),
     path('deletecategory/<int:category_id>/', delete_category, name='deletecategory'),
     path('search/', search_products, name='search_products'),
+    
+
 
 
 ]

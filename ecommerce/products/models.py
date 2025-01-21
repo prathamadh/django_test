@@ -15,7 +15,7 @@ class Product(models.Model):
     product_description=models.TextField()
     product_image=models.FileField(upload_to='static/uploads',null=True)
     created_at=models.DateTimeField(auto_now_add=True)
-    category=models.ForeignKey(Category,on_delete=models.CASCADE ,null=True)
+    category=models.ForeignKey(Category,related_name='products',on_delete=models.CASCADE ,null=True)
     
     def __str__(self):
         return self.product_name

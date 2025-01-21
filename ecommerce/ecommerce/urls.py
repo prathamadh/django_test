@@ -29,7 +29,8 @@ urlpatterns = [
     path('',include('users.urls')),
     path('',include('accounts.urls')),
     path('admins/',include('adminspage.urls')),
-    # path('products', include('recommender.urls')), 
+    # path('products', include('recommender.urls')),
+    path("recommendation/", include("recommendation.urls")),
 
 
 

@@ -1,160 +1,145 @@
 {% extends 'admins/layout.html' %}
 {% block main-content %}
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f6f9;
+    color: #343a40;
+  }
+
+  .container-fluid {
+    padding: 30px;
+  }
+
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+    border: none;
+    background: linear-gradient(to bottom right, #ffffff, #f0f3f6);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-body {
+    padding: 30px;
+    text-align: center;
+  }
+
+  .circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .circle.orders {
+    background: linear-gradient(to bottom right, #007bff, #0056b3);
+  }
+
+  .circle.users {
+    background: linear-gradient(to bottom right, #ffc107, #d39e00);
+  }
+
+  .circle.products {
+    background: linear-gradient(to bottom right, #28a745, #1e7e34);
+  }
+
+  .circle.categories {
+    background: linear-gradient(to bottom right, #343a40, #212529);
+  }
+
+  .text-uppercase {
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    color: #6c757d;
+    margin-bottom: 5px;
+  }
+
+  h2.text-muted {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  a.text-decoration-none {
+    text-decoration: none;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 10px;
+    color: #495057;
+  }
+
+  .row .col-md-6 {
+    margin-bottom: 20px;
+  }
+</style>
+
 <div class="container-fluid">
-    <h2 class="text-center my-3 text-muted">
-      Admin Dashboard
-    </h2>
-    <div class="row d-flex">
-      <div class="col-md-6 col-xl-4 mb-4">
-        <a href="#" class="text-decoration-none">
-          <div class="card shadow border-0 py-2">
-            <div class="card-body">
-              <div class="row align-items-center no-gutters">
-                <div class="col me-2">
-                  <div class="text-uppercase text-primary fw-bold text-xs mb-1 text-center">
-                    <span>
-                      Total Orders
-                    </span>
-                  </div>
-                  <div class="text-secondary fw-bold mb-0 text-center">
-                    <span>Delivered: 0</span>
-                  </div>
-                  <div class="col-auto text-center">
-                    <i class="fab fa-first-order-alt fs-1 text-success"></i>
-                  </div>
-                </div>
-              </div>
+  <h2 class="text-center text-muted">
+    Admin Dashboard
+  </h2>
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-6 col-xl-4 mb-4">
+      <a href="/admins/orders" class="text-decoration-none">
+        <div class="card">
+          <div class="card-body">
+            <div class="circle orders">O</div>
+            <div class="text-uppercase">Orders</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 col-xl-4 mb-4">
+      <a href="/admins/users" class="text-decoration-none">
+        <div class="card">
+          <div class="card-body">
+            <div class="circle users">U</div>
+            <div class="text-uppercase">Total Users</div>
+            <div class="card-title">
+              {{ logged_in_users }} 
             </div>
           </div>
-        </a>
-      </div>
+        </div>
+      </a>
+    </div>
+    
 
-      <div class="col-md-6 col-xl-4 mb-4">
-        <a href="#" class="text-decoration-none">
-          <div class="card shadow border-0 py-2 bg-warning">
-            <div class="card-body">
-              <div class="row align-items-center no-gutters">
-                <div class="col me-2">
-                  <div class="text-uppercase text-light fw-bold text-xs mb-1 text-center">
-                    <span>
-                      Total Users
-                    </span>
-                  </div>
-                  <div class="text-secondary fw-bold mb-0 text-center">
-                    <span>Deactivated: 0</span>
-                  </div>
-                  <div class="col-auto text-center">
-                    <i class="fas fa-users fs-1 text-success"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div class="col-md-6 col-xl-4 mb-4">
+      <a href="/products" class="text-decoration-none">
+        <div class="card">
+          <div class="card-body">
+            <div class="circle products">P</div>
+            <div class="text-uppercase">Products</div>
           </div>
-        </a>
-      </div>
+        </div>
+      </a>
+    </div>
 
-      <div class="col-md-6 col-xl-4 mb-4">
-        <a href="#" class="text-decoration-none">
-          <div class="card shadow border-0 py-2 bg-success">
-            <div class="card-body">
-              <div class="row align-items-center no-gutters">
-                <div class="col me-2">
-                  <div class="text-uppercase text-light fw-bold text-xs mb-1 text-center">
-                    <span>
-                      Total Products
-                    </span>
-                  </div>
-                  <div class="text-warning fw-bold mb-0 text-center">
-                    <span>Out of Stock: 0</span>
-                  </div>
-                  <div class="col-auto text-center">
-                    <i class="fas fa-globe fs-1 text-light"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div class="col-md-6 col-xl-4 mb-4">
+      <a href="/products/categories" class="text-decoration-none">
+        <div class="card">
+          <div class="card-body">
+            <div class="circle categories">C</div>
+            <div class="text-uppercase">Categories</div>
           </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-xl-4 mb-4">
-        <a href="#" class="text-decoration-none">
-          <div class="card shadow border-0 py-2 bg-danger">
-            <div class="card-body">
-              <div class="row align-items-center no-gutters">
-                <div class="col me-2">
-                  <div class="text-uppercase text-light fw-bold text-xs mb-1 text-center">
-                    <span>
-                      Total Sales
-                    </span>
-                  </div>
-                  <div class="text-white fw-bold mb-0 text-center">
-                    <span>Booking: 0</span>
-                  </div>
-                  <div class="col-auto text-center">
-                    <i class="fas fa-globe fs-1 text-white"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-xl-4 mb-4">
-        <a href="#" class="text-decoration-none">
-          <div class="card shadow border-0 py-2 bg-primary">
-            <div class="card-body">
-              <div class="row align-items-center no-gutters">
-                <div class="col me-2">
-                  <div class="text-uppercase text-light fw-bold text-xs mb-1 text-center">
-                    <span>
-                      Admins
-                    </span>
-                  </div>
-                  <div class="text-white fw-bold mb-0 text-center">
-                    <span>Super Admin: 1</span>
-                  </div>
-                  <div class="col-auto text-center">
-                    <i class="fas fa-users fs-1 text-white"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-md-6 col-xl-4 mb-4">
-        <a href="#" class="text-decoration-none">
-          <div class="card shadow border-0 py-2 bg-dark">
-            <div class="card-body">
-              <div class="row align-items-center no-gutters">
-                <div class="col me-2">
-                  <div class="text-uppercase text-light fw-bold text-xs mb-1 text-center">
-                    <span>
-                     Categories
-                    </span>
-                  </div>
-                  <div class="text-white fw-bold mb-0 text-center">
-                    <span>Sub-Categories: 0</span>
-                  </div>
-                  <div class="col-auto text-center">
-                    <i class="fas fa-globe fs-1 text-white"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
+        </div>
+      </a>
     </div>
   </div>
+</div>
 {% endblock %}
-
-
-
-
-
-

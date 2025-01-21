@@ -12,3 +12,13 @@ class OrderAdmin(admin.ModelAdmin):
 class OrderItemAdmin(admin.ModelAdmin):
     # Display the columns for the OrderItem model in the admin panel
     list_display = ('order', 'product', 'quantity', 'total_price', 'is_ordered')
+
+
+from django.contrib import admin
+from .models import Wishlist
+
+@admin.register(Wishlist)
+class WishlistAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'added_on')
+    list_filter = ('added_on',)
+    search_fields = ('user__username', 'product__name')

@@ -32,10 +32,7 @@
                 <tbody>
                     {% for item in categories %}
                     <tr>
-                        <td>
-                            <!-- Link to view products in this category -->
-                            <a href="{% url 'category_products' item.id %}">{{ item.category_name }}</a>
-                        </td>
+                        
                         <td>
                             <!-- Update and delete actions for categories -->
                             <a href="/products/updatecategory/{{ item.id }}" class="btn btn-primary"> 

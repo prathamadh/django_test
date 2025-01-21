@@ -281,14 +281,27 @@
     </div>
 
     <!-- Header Actions -->
-    <div class="d-flex ms-auto">
+    <!-- <div class="d-flex ms-auto"> -->
       <!-- Cart icon with dynamic item count -->
-<a href="/cart" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart">
+<!-- <a href="/cart" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart">
   <span id="cart-count">{{ user.cart_item_count }}</span> 
-</a>
+</a> -->
+<div class="d-flex ms-auto">
+  <!-- Cart icon with dynamic item count -->
+  <a href="/addtocart/{{product.id}}" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart">
+    <span id="cart-count">{{ user.cart_item_count }}</span>
+  </a>
 
-      <!-- <a href="/cart" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart"></a> -->
-      <a href="/wishlist" class="fas fa-heart me-3 text-decoration-none" title="Wishlist"></a>
+  <!-- Wishlist icon with dynamic item count -->
+  <a href="/add_to_wishlist/{{product.id}}" class="fas fa-heart text-decoration-none" title="Wishlist">
+    <span id="wishlist-count">{{ user.wishlist_item_count }}</span>
+  </a>
+</div>
+
+
+
+      
+      
 
       <div class="text-end d-flex align-items-center justify-content-end gap-3">
         {% if user.is_authenticated %}
@@ -306,7 +319,7 @@
                 <i class="bi bi-person-plus"></i>
             </a>
         {% endif %}
-    </div>
+      </div>
     
     
     
@@ -330,7 +343,7 @@
       
       <!-- Iterate through categories and create a link for each one -->
       {% for category in categories %}
-        <a href="{% url 'products:category_product' category.id %}" class="nav-link">{{ category.category_name }}</a>
+        <a href="{% url 'users:category_product' category.id %}" class="nav-link">{{ category.category_name }}</a>
       {% endfor %}
     </div>
   </div>

@@ -13,11 +13,39 @@ def dashboard(request):
     return render(request, 'admins/dashboard.html', )
 
 
+
+
 @login_required
 @admin_only
 def order(request):
-    items=Order.objects.all()
-    context={
-        'items':items
+    # Fetch all orders with their related items
+    orders = Order.objects.prefetch_related('items').all()
+
+    # Pass the data to the template
+    context = {
+        'orders': orders,
     }
-    return render(request,'admins/order.html',context)
+    return render(request, 'admins/order.html', context)
+
+# def order(request):
+#     items=Order.objects.all()
+#     context={
+#         'items':items
+#     }
+#     return render(request,'admins/order.html',context)
+
+
+from django.contrib.sessions.models import Session
+from django.contrib.auth.models import User
+from django.utils.timezone import now
+@login_required
+@admin_only
+
+
+def show_logged_in_users(request):
+    # Get all active users (You can add conditions to only get logged-in users)
+    logged_in_users = User.objects.all()
+
+    # Pass the users list to the template
+    return render(request, 'admins/users1.html', {'logged_in_users': logged_in_users})
+

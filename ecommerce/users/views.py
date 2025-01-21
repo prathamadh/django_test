@@ -18,8 +18,6 @@ from .models import Cart, Order,  OrderItem
 
 
 # Create your views here.
-
-
 def index(request):
     products = Product.objects.all().order_by('-id') 
     categories = Category.objects.all()  
@@ -28,7 +26,35 @@ def index(request):
         'categories': categories  
     }
     return render(request, 'users/index.html', context)
+# from .recommendation import get_recommendations
+# from surprise import  SVD
+# import joblib
+# model = SVD()
+# model = joblib.load('lightfm_model.pkl')
+# def index(request):
+    
+#     if request.user.is_authenticated:
+#         categories = Category.objects.all() 
+#         user_id = request.user.id
+#         products = Product.objects.all().order_by('-id')
+#         product_list = products.values_list('id', flat=True)
+#         recommended_items = get_recommendations(user_id, model,product_list)
+#         recommended_products = Product.objects.filter(id__in=recommended_items)
+#         context = {
+#         'products': products,
+#         'categories': categories,
+#         'recommended': recommended_products,
+#          }
 
+#         return render(request, 'users/reccindex.html', context)
+#     else :
+#         products = Product.objects.all().order_by('-id') 
+#         categories = Category.objects.all()  
+#         context={
+#         'products': products,
+#         'categories': categories  
+#         }
+#     return render(request, 'users/index.html', context)
 
 
 def products(request):
@@ -46,6 +72,24 @@ def productdetails(request, product_id):
     return render(request, 'users/productdetails.html', context)
 
 
+def show_category(request, category_id=None):
+    # Fetch all categories
+    categories = Category.objects.all()
+    
+    # If category_id is passed, filter products based on the category
+    if category_id:
+        category = get_object_or_404(Category, id=category_id)
+        products = Product.objects.filter(category=category)
+    else:
+        # If no category is selected, show all products
+        products = Product.objects.all()
+
+    context = {
+        'categories': categories,  # Pass all categories to the template
+        'products': products,     # Pass filtered products based on the selected category
+    }
+    
+    return render(request, 'users/category_product.html', context)
 
 
 def number_of_items(request):
@@ -88,12 +132,42 @@ def show_cart_items(request):
         'total_bill': total_bill,
     }
     return render(request, 'users/cart.html', context)
-
-
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .models import Wishlist, Product
 
 @login_required
+def wishlist_view(request):
+    wishlist_items = Wishlist.objects.filter(user=request.user)
+    return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
+
+@login_required
+def add_to_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+    if created:
+        messages.success(request, 'Product added to wishlist.')
+    else:
+        messages.info(request, 'Product is already in your wishlist.')
+    return redirect('wishlist')
+
+@login_required
+def remove_from_wishlist(request, item_id):
+    wishlist_item = get_object_or_404(Wishlist, id=item_id, user=request.user)
+    wishlist_item.delete()
+    messages.success(request, 'Product removed from wishlist.')
+    return redirect('wishlist')
+
+
+
+
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+@login_required
+@login_required
 def checkout(request):
+    
     user_cart_items = Cart.objects.filter(user=request.user)
     
     # Calculate the total price of all items in the cart
@@ -116,14 +190,26 @@ def checkout(request):
         contact_no = request.POST.get('contact_no')
         payment_method = request.POST.get('payment_method')
 
+        # Determine payment status
+        if payment_method == 'Cash on Delivery':
+            payment_status = "Pending"
+            is_paid = False  # For COD, payment status is not paid
+        elif payment_method == 'Esewa':
+            payment_status = "Payment through Esewa"
+            is_paid = True  # For Esewa, payment is processed
+        else:
+            payment_status = "Failed"
+            is_paid = False
+
         # Create the order
         order = Order.objects.create(
             user=request.user,
             total_price=total_price,
             payment_method=payment_method,
+            is_paid=is_paid,
             contact_no=contact_no,
             address=address,
-            payment_status=False  # Initially, the payment status is set to False (pending).
+            payment_status=payment_status,  # Set payment status here
         )
 
         # Create order items
@@ -137,23 +223,22 @@ def checkout(request):
 
         # Delete items from the cart after the order is created
         user_cart_items.delete()
-        
 
         # Handle payment method-specific logic
         if order.payment_method == 'Cash on Delivery':
-            messages.add_message(request, messages.SUCCESS, 'Order successfully placed.')
-            return redirect('/myorder')
-        
+            # Set payment status to 'True' for Cash on Delivery orders
+            order.payment_status = "Paid on Delivery"
+            order.save()  # Save the order with updated payment status
+            messages.add_message(request, messages.SUCCESS, 'Your order is confirmed. It will be delivered soon.')
+            return redirect('/myorder')  # Redirect to the 'My Orders' page (or wherever you'd like)
+
         elif order.payment_method == 'Esewa':
-            # Check if the cart is not empty
-            if user_cart_items.exists():
-                
-                # Redirect to the esewa payment page with order_id and cart_id
-                return redirect(reverse('esewaform', args=[order.id, user_cart_items.first().id]))
-            else:
-                messages.add_message(request, messages.ERROR, 'Cart is empty.')
-                return redirect('cart')
-        
+            # Set payment status to "Payment through Esewa"
+            order.payment_status = "Payment through Esewa"
+            order.save()  # Save the order with updated payment status
+            messages.add_message(request, messages.SUCCESS, 'Your order is being processed through Esewa.')
+            return redirect(reverse('esewaform') + "?o_id=" + str(order.id))  # Redirect to the Esewa payment page
+
         else:
             messages.add_message(request, messages.ERROR, 'Failed to place the order.')
             return render(request, 'users/checkout.html', {'order_items': order_items})
@@ -184,13 +269,6 @@ def remove_cart_item(request, cart_id):
     return redirect('/cart')
 
 @login_required
-
-
-
-
-
-
-
 class EsewaPaymentView(View):
     def get(self, request, *args, **kwargs):
         o_id = request.GET.get('o_id')
@@ -233,6 +311,7 @@ class EsewaPaymentView(View):
             'signature': result
         }
 
+        # Make sure these values are passed to the template
         context = {
             'order': order,
             'data': data,
@@ -240,14 +319,22 @@ class EsewaPaymentView(View):
         }
 
         return render(request, 'users/esewaform.html', context)
+
 import json
+
+
+
 @login_required
 def esewa_verify(request, order_id, cart_id):
     if request.method == "GET":
         data = request.GET.get('data')
+        if not data:
+            messages.error(request, 'Invalid response from Esewa.')
+            return redirect('/myorder')
+        
         decoded_data = base64.b64decode(data).decode()
         map_data = json.loads(decoded_data)
-        
+
         try:
             order = Order.objects.get(id=order_id)
             cart = Cart.objects.get(id=cart_id)
@@ -258,45 +345,33 @@ def esewa_verify(request, order_id, cart_id):
             messages.error(request, 'Cart not found.')
             return redirect('cart')
 
+        # Ensure correct response handling
         if map_data.get('status') == 'COMPLETE':
             order.payment_status = True
             order.save()
-            cart.delete()
+            cart.delete()  # Delete cart after successful payment
             messages.success(request, 'Payment successful.')
             return redirect('/myorder')
         else:
-            messages.error(request, 'Failed to make payment')
+            messages.error(request, 'Payment failed or was cancelled.')
             return redirect('/myorder')
 
-# In views.py
-from django.http import HttpResponse
-from django.views import View
-
-class TestView(View):
-    def get(self, request):
-        return HttpResponse('This is a test view')
 
 
-
-
-
-
-
-
- 
-
-
-
-
-   
 @login_required
 def my_order(request):
-    user=request.user
-    items=Order.objects.filter(user=user)
-    context={
-        'items':items
+    user = request.user
+    orders = Order.objects.filter(user=user)
+    
+    # Get all order items associated with the user's orders
+    order_items = OrderItem.objects.filter(order__in=orders)
+    
+    context = {
+        'order_items': order_items  # Pass order items to the template
     }
-    return render(request,'users/myorder.html',context)
+    
+    return render(request, 'users/myorder.html', context)
+
 
 
 
