@@ -7,17 +7,63 @@
 
 {% block main-content %}
 {% include 'users/header.html' %}
+<style>
+    .action-column {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds space between buttons */
+}
 
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.action-btn .fa-trash {
+    margin-right: 5px;
+}
+
+.action-btn .fa-shopping-cart {
+    margin-right: 5px;
+}
+
+.action-btn.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+}
+
+.action-btn.btn-danger:hover {
+    background-color: #c82333;
+    color: #fff;
+}
+
+.action-btn.btn-success {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+}
+
+.action-btn.btn-success:hover {
+    background-color: #218838;
+    color: #fff;
+}
+
+</style>
 <div class="container my-5">
     <div class="row d-flex justify-content-center">
         <div class="col-md-10">
-            {% if wishlist_items|length < 1 %}
-                <h2 class="text-center text-danger my-3">Your wishlist is empty.</h2>
-                <div class="text-center">
-                    <a href="/" class="btn btn-primary">Browse Products</a>
-                </div>
+            {% if items|length < 1 %}
+                <h2 class="text-center text-danger my-3">No items in your wishlist</h2>
             {% else %}
-                <h2 class="text-center">My Wishlist</h2>
+                <h2 class="text-center mb-4">My Wishlist Items</h2>
+
                 {% for msg in messages %}
                     {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                         <div class="alert alert-success">
@@ -31,38 +77,39 @@
                     {% endif %}
                 {% endfor %}
 
-                <!-- Wishlist Table -->
-                <table class="table table-bordered table-striped">
-                    <thead>
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="bg-light">
                         <tr>
                             <th>Product Name</th>
-                            <th>Unit Price</th>
                             <th>Product Image</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in wishlist_items %}
+                        {% for i in items %}
                         <tr>
-                            <td>{{ item.product.product_name }}</td>
-                            <td>Rs{{ item.product.product_price }}</td>
+                            <td>{{ i.product.product_name }}</td>
                             <td>
-                                <img src="/{{ item.product.product_image }}" alt="{{ item.product.product_name }}" width="100" height="100">
+                                <img src="/{{ i.product.product_image }}" alt="{{ i.product.product_name }}" 
+                                     class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
                             </td>
-                            <td>
-                                <!-- Add to Cart Button -->
-                                <a href="{% url 'users:add_to_cart' item.product.id %}" class="btn btn-primary btn-sm">
-                                    Add to Cart
+                            <td class="action-column">
+                                <a href="/removewishlist/{{ i.id }}" class="btn btn-danger btn-sm action-btn" 
+                                   onclick="return confirm('Are you sure you want to remove this item from your wishlist?')">
+                                    <i class="fa fa-trash"></i> Remove
                                 </a>
-                                <!-- Delete from Wishlist Button -->
-                                <a href="{% url 'users:remove_from_wishlist' item.id %}" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to remove this item from your wishlist?')">
-                                    Delete
-                                </a>
+                                <form action="/addtocart/{{ i.id }}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm action-btn">
+                                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                </form>
                             </td>
+                            
                         </tr>
                         {% endfor %}
                     </tbody>
+                    
                 </table>
             {% endif %}
         </div>

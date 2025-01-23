@@ -19,9 +19,9 @@
       <div class="col-md-8">
           <h1>{{product.product_name}}</h1>
           <h3 class="text-success">Rs.{{product.product_price}}</h3>
-          <strong> Available Stock :{{product.stock}}</strong>
-          <br>
-          <strong> Category : {{product.category}}</strong>
+          <!-- <strong> Available Stock :{{product.stock}}</strong> -->
+          
+          <strong class="text"> Category : {{product.category}}</strong>
           <br>
           <p>{{product.product_description}}</p>
           <div class="my-3"><a href="/addtocart/{{product.id}}" class="btn custom-cart-button">Add to Cart
@@ -37,6 +37,8 @@
 </div>
 <style>
 /* Custom Add to Cart button */
+
+
 .custom-cart-button {
     background-color: #29a36a; 
     color: white; 

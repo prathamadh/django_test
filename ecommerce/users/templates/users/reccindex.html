@@ -244,63 +244,26 @@ body {
 
 <!-- start of carousel -->
 
-<section>
-  <div id="carouselExampleCaptions" class="carousel slide">
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-        aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-        aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-        aria-label="Slide 3"></button>
-      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"
-        aria-label="Slide 4"></button>
+
+<section class="pt-5">
+  <header class="text-center">
+    <p class="small text-muted small text-uppercase mb-1">Sustainability Meets Style</p>
+    <h2 class="h5 text-uppercase mb-4">Discover Our Eco-Friendly Products</h2>
+  </header>
+  <div class="row justify-content-center">
+    <div class="col-md-10 position-relative">
+      <a href="#" class="category-item text-decoration-none">
+        <img src="{% static 'images/banner-1.jfif' %}" class="d-block w-100" alt="Category Image" height="600px" style="object-fit: cover;">
+        <div class="text-white position-absolute p-4" style="top: 50%; left: 0; transform: translateY(-50%);">
+          <h2 class="text-uppercase" style="position: relative; left: -40px;">Eco-Friendly</h2>
+          <h1>Sustainable Living</h1>
+          <p>Thoughtfully crafted for a greener tomorrow</p>
+          <button type="button" class="btn btn-light">Shop Now</button>
+        </div>
+      </a>
     </div>
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{% static 'images/banner-1.jfif' %}" class="d-block w-100" alt="..." height="550px" style="opacity: 150%;">
-        <div class="carousel-caption d-flex  d-md-block ">
-          <h2 class="colors">Eco-Friendly</h2>
-          <h1 class="text-dark">Susutainable Living</h1>
-          <p class="text-dark">Thoughtfully crafted for a greener tomorrow</p>
-          <button type="button" class="btn colors">ShopNow</button>
-
-        </div>
-      </div>
-      <div class="carousel-item active">
-        <img src="{% static 'images/banner-1.jfif' %}" class="d-block w-100" alt="..." height="550px" style="opacity: 150%;">
-        <div class="carousel-caption d-flex align-items-center justify-content-center d-md-block ">
-          <h2 class="colors">Eco-Friendly</h2>
-          <h1 class="text-dark">Susutainable Living</h1>
-          <p class="text-dark">Thoughtfully crafted for a greener tomorrow</p>
-          <button type="button" class="btn colors">ShopNow</button>
-        </div>
-      </div>
-      <div class="carousel-item active">
-        <img src="{% static 'images/banner-1.jfif' %}" class="d-block w-100" alt="..." height="550px" style="opacity: 150%;">
-        <div class="carousel-caption d-flex align-items-center justify-content-center d-md-block ">
-          <h2 class="colors">Eco-Friendly</h2>
-          <h1 class="text-dark">Susutainable Living</h1>
-          <p class="text-dark">Thoughtfully crafted for a greener tomorrow</p>
-          <button type="button" class="btn colors">ShopNow</button>
-
-        </div>
-      </div>
-
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-      data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-      data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
 </section>
-
 
 
 
@@ -314,41 +277,51 @@ body {
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 <!-- <div class="container-fluid">
-  <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+{% for category, products in products_by_category.items %}
+  <!-- Category Name -->
+  <h6 class="text-center mt-4">{{ category.category_name }}</h6>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for item in products %}
       <div class="col">
-        <div class="card shadow-sm border-light rounded-3 p-2"> -->
+        <div class="card shadow-sm border-light rounded-3 p-2">
           <!-- Product Image -->
-          <!-- <img src="/{{ item.product_image }}" class="card-img-top rounded-3" alt="{{ item.product_name }}" style="height: 150px; object-fit: contain;">
+          <img src="{{ item.product_image.url }}" class="card-img-top rounded-3" alt="{{ item.product_name }}" style="height: 150px; object-fit: contain;">
           
-          <div class="card-body"> -->
+          <div class="card-body">
             <!-- Product Name -->
-            <!-- <h5 class="card-title">
+            <h5 class="card-title">
               <a href="/productdetails/{{ item.id }}" class="text-decoration-none text-dark">
                 {{ item.product_name }}
               </a>
-            </h5> -->
+            </h5>
             
-            <!-- <h5 class="card-title text-dark mb-3">{{ item.product_name }}</h5> -->
-
             <!-- Product Price -->
-            <!-- <h3 class="text-primary mb-3">Rs.{{ item.product_price }}</h3> -->
-
+            <h3 class="text-primary mb-3">Rs. {{ item.product_price }}</h3>
+            
             <!-- Add to Cart Button -->
-            <!-- <form action="/addtocart/{{product.id}}" method="POST" class="d-flex justify-content-between align-items-center">
+            <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
               {% csrf_token %}
               <button type="submit" class="btn btn-primary flex-grow-1 me-2">
                 <i class="fas fa-shopping-cart me-2"></i> Add to Cart
-              </button> -->
+              </button>
               <!-- Wishlist Button -->
-              <!-- <button type="submit" class="btn btn-outline-danger">
+              <button type="button" class="btn btn-outline-danger">
                 <i class="fas fa-heart"></i>
               </button>
-            </form> -->
-          <!-- </div>
+            </form>
+          </div>
         </div>
-      </div> -->
-    <!-- {% endfor %} -->
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Explore More Button -->
+<div class="text-center mt-3">
+  <a href="{% url 'products:category_product' category.id %}" class="btn btn-outline-primary">
+    Explore More {{ category.category_name }}
+  </a>
+</div>
+{% endfor %}
+
   <!-- </div>
 </div> -->
 

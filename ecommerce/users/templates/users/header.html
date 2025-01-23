@@ -1,42 +1,6 @@
 {% load static %}
 
-<!-- <header class="p-3 text-bg-dark">
-  <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-          <img src="" alt="LOGO">
-      </a>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="/" class="nav-link px-2 text-white">Shop</a></li>
-        <li><a href="/productlist" class="nav-link px-2 text-white">Home and Kitchen</a></li>
-        <li><a href="/cart" class="nav-link px-2 text-white">Personal goods</a></li>
-        <li><a href="#" class="nav-link px-2 text-white">Decorative</a></li>
-        <li><a href="#" class="nav-link px-2 text-white">Beauty</a></li>
-      </ul>
-
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-        <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
-      </form>
-
-      <div class="text-end">
-        {% if user.is_authenticated %}
-        <a href="/logout" type="button" class="btn btn-danger">
-            <i class="fas fa-sign-out-alt"></i> Log Out
-        </a>
-        {% else %}
-        <a href="/login" type="button" class="btn btn-outline-light me-2">
-          <i class="fa-regular fa-user"></i> 
-        </a>
-        <a href="/register" type="button" class="btn btn-warning">
-            <i class="fas fa-user-plus"></i>
-        </a>
-        {% endif %}
-    </div>
-    
-    </div>
-  </div>
-</header> -->
 
 
 <!DOCTYPE html>
@@ -262,6 +226,7 @@
 </nav>
 
 <!-- Second Navbar -->
+<!-- Second Navbar -->
 <nav class="navbar navbar-second">
   <div class="container-fluid d-flex justify-content-between align-items-center">
 
@@ -281,56 +246,45 @@
     </div>
 
     <!-- Header Actions -->
-    <!-- <div class="d-flex ms-auto"> -->
+    <div class="d-flex ms-auto">
       <!-- Cart icon with dynamic item count -->
-<!-- <a href="/cart" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart">
-  <span id="cart-count">{{ user.cart_item_count }}</span> 
-</a> -->
-<div class="d-flex ms-auto">
-  <!-- Cart icon with dynamic item count -->
-  <a href="/addtocart/{{product.id}}" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart">
-    <span id="cart-count">{{ user.cart_item_count }}</span>
-  </a>
-
-  <!-- Wishlist icon with dynamic item count -->
-  <a href="/add_to_wishlist/{{product.id}}" class="fas fa-heart text-decoration-none" title="Wishlist">
-    <span id="wishlist-count">{{ user.wishlist_item_count }}</span>
-  </a>
-</div>
-
-
-
-      
-      
+      <a href="/cart" class="fas fa-shopping-cart me-3 text-decoration-none" title="Shopping Cart">
+        <span id="cart-count">{{ user.cart_item_count }}</span>
+      </a>
+      <!-- Wishlist icon with dynamic item count -->
+      <a href="/wishlist/" class="fas fa-heart text-decoration-none" title="Add to Wishlist">
+        <span id="wishlist-count">{{ user.wishlist.count }}</span>
+    </a>
 
       <div class="text-end d-flex align-items-center justify-content-end gap-3">
         {% if user.is_authenticated %}
-            <!-- Log Out Icon -->
-            <a href="/logout" class="text-danger fs-4" title="Log Out">
-                <i class="bi bi-box-arrow-right"></i>
-            </a>
+          <!-- My Account Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: white; background-color: #21825d; border-radius: 20px;">
+              My Account
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="accountDropdown" style="background-color: #21825d; border-radius: 10px; padding: 8px; min-width: 180px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); font-size: 0.875rem; line-height: 1.2;">
+              <li><a class="dropdown-item" href="/profile" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Profile</a></li>
+              <li><a class="dropdown-item" href="/cart" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Cart</a></li>
+              <li><a class="dropdown-item" href="/order" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Order</a></li>
+              <li><a class="dropdown-item" href="/password-change" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Password Change</a></li>
+              <li><a class="dropdown-item text-danger" href="/logout" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Log Out</a></li>
+            </ul>
+          </div>
         {% else %}
-            <!-- Login Icon -->
-            <a href="/login" class="text-warning fs-4" title="Login">
-                <i class="bi bi-person"></i>
-            </a>
-            <!-- Sign-Up Icon -->
-            <a href="/register" class="text-warning fs-4" title="Sign-Up">
-                <i class="bi bi-person-plus"></i>
-            </a>
+          <!-- Login Icon -->
+          <a href="/login" class="text-warning fs-4" title="Login">
+            <i class="bi bi-person"></i>
+          </a>
+          <!-- Sign-Up Icon -->
+          <a href="/register" class="text-warning fs-4" title="Sign-Up">
+            <i class="bi bi-person-plus"></i>
+          </a>
         {% endif %}
       </div>
-    
-    
-    
-
-      
-    
-
+    </div>
   </div>
 </nav>
-
-
 
 <!-- Third Navbar -->
 

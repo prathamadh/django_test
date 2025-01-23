@@ -12,25 +12,25 @@
 
 
 
-<div class="container-fluid">
+<!-- <div class="container-fluid">
   <div class="row row-cols-1 row-cols-md-4 g-4">
     {% for item in products %}
       <div class="col">
         <div class="card">
-          <!-- Product Image -->
+          
           <img src="/{{ item.product_image }}" class="card-img-top" alt="{{ item.product_name }}">
           
           <div class="card-body">
-            <!-- Product Name -->
+            
             <h5 class="card-title">{{ item.product_name }}</h5>
             
-            <!-- Product Price -->
+           
             <h3>Rs.{{ item.product_price }}</h3>
 
-            <!-- View Details Button -->
+            
             <a href="/productdetails/{{ item.id }}" class="btn btn-primary">View Product</a>
 
-            <!-- Add to Cart Button -->
+            
             <form action="/addtocart/{{product.id}}" method="POST" class="mt-2">
               {% csrf_token %}
               <button type="submit" class="btn btn-success">
@@ -42,7 +42,7 @@
       </div>
     {% endfor %}
   </div>
-</div>
+</div> -->
 
 
   
