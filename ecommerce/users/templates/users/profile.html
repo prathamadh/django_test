@@ -1,89 +1,294 @@
-{% extends 'users/base.html' %}
-{% load static %}
+{% include 'users/header.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* General Enhancements */
+        body {
+            background-color: #e6f9ec; /* Light green background */
+        }
+    
+        .profile-container {
+    border: 1px solid #d1f7d9;
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    margin: 50px auto; /* Center the container */
+    max-width: 800px; /* Limit width for better alignment */
+    width: 90%; /* Make it responsive for smaller screens */
+}
 
-    {% block content %}
+.profile-header h2 {
+    font-size: 2.2rem; /* Scaled-down size for better fit */
+    color: #33cc99; /* Light green */
+    text-transform: uppercase;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: fadeInDown 1s;
+    text-align: center; /* Center-align text */
+}
 
-      <div class="container py-5">
-       
+.profile-header p {
+    font-size: 1.1rem; /* Scaled-down size */
+    color: #2ebf84; /* Light green */
+    animation: fadeInUp 1s;
+    text-align: center; /* Center-align text */
+    margin-bottom: 20px;
+}
 
-        <div class="jumbotron">
-          <h1>{{request.user.first_name}} {{request.user.last_name}}</h1>
-          
-          <p><strong>Username:</strong> {{request.user.username}}</p>
-          <p><a class="btn btn-primary btn-large" href="{% url 'users:test' %}">Add Address »</a> <a class="btn btn-outline-primary btn-large" href="#">My Orders »</a></p>
-        </div>
+/* Add responsiveness */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 20px; /* Reduce padding for smaller screens */
+    }
+
+    .profile-header h2 {
+        font-size: 1.8rem; /* Adjust font size for smaller devices */
+    }
+
+    .profile-header p {
+        font-size: 1rem; /* Adjust paragraph font size */
+    }
+}
+
+    
+        .user-details p {
+            font-size: 16px;
+            color: #249c70; /* Darker green */
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+    
+        .user-details p:hover {
+            color: #33cc99; /* Lighter green on hover */
+        }
+    
+        .action-btn {
+    margin: 5px 10px; /* Smaller margin for compact spacing */
+    font-size: 12px; /* Reduced font size for a smaller button */
+    padding: 8px 15px; /* Less padding for a compact look */
+    border-radius: 5px; /* Slightly rounded corners */
+    background: #33cc99; /* Solid light green */
+    color: #ffffff; /* White text for contrast */
+    border: none; /* No border for a cleaner design */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for minimal depth */
+    cursor: pointer; /* Pointer for better UX */
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
 
 
-        <div class="row">
 
-          <div class="col-lg-6">
-            <div class="card mb-4" id="headings">
-              <div class="card-header">Addresses <span class="float-right"><a href="{% url 'users:test' %}">Add Address</a></span></div>
-              <div class="card-body">
-                {% if addresses %}
-                    {% for address in addresses %}
-                        <h4 class="mb-3">Address {{forloop.counter}}</h4> 
-                        
-                        <span class="float-right"><a href="{% url 'users:test' address.id %}"><i class="fas fa-trash-alt small text-muted"></i></a></span>
-
-                        <p>
-                            <strong>Locality: </strong>{{address.locality}} <br>
-                            <strong>City: </strong>{{address.city}} <br>
-                            <strong>State: </strong>{{address.state}} <br>
-                        </p>
-
-                        <hr>
-                    {% endfor %}
-                {% else %}
-                <div class="text-danger">
-                  Address not Added.
-                </div>
-                {% endif %}
-                
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-6">
-            <div class="card mb-4" id="tables">
-              <div class="card-header">Orders</div>
-              <div class="card-body">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Item</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% if orders %}
-                      {% for order in orders %}
-                        <tr>
-                          <td>{{forloop.counter}}</td>
-                          <td>{{order.product.title}}</td>
-                          <td>
-                            {{order.status}}
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    {% else %}
-                    <tr>
-                      <td class="text-danger" colspan="3">You've not Ordered anything yet.</td>
-                    </tr>
-                    {% endif %}
-                    
-                    
-                  </tbody>
-                </table>
-                
-              </div>
-            </div>
-          </div>
-          
-        </div>
+    
+        .action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+    
+        .btn-warning {
+            background: linear-gradient(135deg, #008080, #009999); /* Teal gradient */
+        }
+    
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6666, #ff3333); /* Soft Red */
+        }
+    
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #ff3333, #ff0000);
+        }
+    
+        /*  Order History Enhancements */
+        
+        .order-history {
+            background: linear-gradient(135deg, #ecfdf4, #e6f9ec); /* Light green gradient */
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
     
         
+        .order-history:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+    
         
-      </div>
-{% endblock content %}
+        .order-history h4 {
+            color: #33cc99; /* Light green */
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    
+        .btn-custom {
+            font-size: 14px;
+            padding: 12px 25px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #008080, #009999); /* Teal gradient */
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+    
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #009999, #00b377); /* Darker Teal */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+    
+        /* Table Styling */
+        .table {
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            animation: fadeIn 1s;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+    
+        .table th {
+            background: linear-gradient(135deg, #33cc99, #66cc99); /* Light green */
+            color: #ffffff;
+            font-weight: bold;
+            text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+        }
+    
+        .table td {
+            text-align: center;
+            padding: 15px;
+            color: #249c70; /* Darker green */
+            transition: background-color 0.3s ease;
+        }
+    
+        .table td:hover {
+            background-color: #e6f9ec; /* Light green */
+        }
+    
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .action-btn {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+    
+            .btn-custom {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+    
+            .membership h4,
+            .order-history h4 {
+                font-size: 20px;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+
+<div class="container profile-container">
+    <div class="profile-header">
+        <h2>Profile</h2>
+        <p>Welcome, {{ request.user.username }}</p>
+        <hr>
+    </div>
+
+    
+
+    <div class="my-4">
+        <h3>Account Actions</h3>
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'users:change_password' %}" class="btn btn-warning action-btn"><i class="fas fa-key"></i> Change Password</a>
+            <a href="{% url 'users:delete_account' %}" class="btn btn-danger action-btn"><i class="fas fa-trash-alt"></i> Delete Account</a>
+        </div>
+    </div>
+
+    <div class="row account-section">
+       
+        <div class="col-md-6">
+            <div class="order-history">
+                <h4>Order History</h4>
+                <a href="{% url 'users:my_order' %}" class="btn btn-secondary mb-2"><i class="fas fa-shopping-cart"></i> View My Orders</a>
+
+                {% if user_orders %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Total Price</th>
+                                    <th>Payment Status</th>
+                                    <th>Date</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in user_orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>${{ order.total_price }}</td>
+                                        <td>{{ order.payment_status|yesno:"Paid,Pending" }}</td>
+                                        <td>{{ order.created_date|date:"Y-m-d" }}</td>
+                                        <td>
+                                            <a href="{% url 'order_details' order.id %}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i> View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+{% endblock %}
+{% include 'users/footer.html' %}

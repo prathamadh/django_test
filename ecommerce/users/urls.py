@@ -29,8 +29,12 @@ urlpatterns=[
     path('add_to_wishlist/<int:product_id>/', add_to_wishlist, name='add_to_wishlist'),
     path('wishlist/', views.show_wishlist_items, name='show_wishlist_items'),
     path('removewishlist/<int:wishlist_id>/', views.remove_wishlist_item, name='remove_wishlist_item'),
-    path('profile/', views.profile, name='profile'),
+    path('profile/', views.user_profile, name='profile'),
     path('test/', TestView.as_view(), name='test'),
+    
+    
+    path('change_password/', views.change_password, name='change_password'),
+    path('delete_account/', views.delete_account, name='delete_account'),
 
 
 

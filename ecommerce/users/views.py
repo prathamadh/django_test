@@ -13,7 +13,11 @@ from django.shortcuts import redirect, get_object_or_404
 from products.models import Product, Category
 from .models import Cart, Order,  OrderItem,Address
 from django.utils.decorators import method_decorator
-
+from .recommendation import get_recommendations
+from surprise import  SVD
+import joblib
+model = SVD()
+model = joblib.load('lightfm_model.pkl')
 
 
 # Create your views here.
@@ -27,21 +31,21 @@ def index(request):
         products_in_category = Product.objects.filter(category=category)[:6]
         products_by_category[category] = products_in_category
     
-    # if request.user.is_authenticated:
-    #     user_id = request.user.id
-    #     product_list = products.values_list('id', flat=True)
-    #     recommended_items = get_recommendations(user_id, model, product_list)
-    #     recommended_products = Product.objects.filter(id__in=recommended_items)
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        product_list = products.values_list('id', flat=True)
+        recommended_items = get_recommendations(user_id, model, product_list)
+        recommended_products = Product.objects.filter(id__in=recommended_items)
         
-    #     context = {
-    #         'products': products,
-    #         'categories': categories,
-    #         'products_by_category': products_by_category,
-    #         'recommended': recommended_products,
-    #     }
+        context = {
+            'products': products,
+            'categories': categories,
+            'products_by_category': products_by_category,
+            'recommended': recommended_products,
+        }
         
-    #     return render(request, 'users/reccindex.html', context)
-    # else:
+        return render(request, 'users/reccindex.html', context)
+    else:
         context = {
             'products': products,
             'categories': categories,
@@ -49,35 +53,7 @@ def index(request):
         }
         
     return render(request, 'users/index.html', context)
-# from .recommendation import get_recommendations
-# from surprise import  SVD
-# import joblib
-# model = SVD()
-# model = joblib.load('lightfm_model.pkl')
-# def index(request):
-    
-#     if request.user.is_authenticated:
-#         categories = Category.objects.all() 
-#         user_id = request.user.id
-#         products = Product.objects.all().order_by('-id')
-#         product_list = products.values_list('id', flat=True)
-#         recommended_items = get_recommendations(user_id, model,product_list)
-#         recommended_products = Product.objects.filter(id__in=recommended_items)
-#         context = {
-#         'products': products,
-#         'categories': categories,
-#         'recommended': recommended_products,
-#          }
 
-#         return render(request, 'users/reccindex.html', context)
-#     else :
-#         products = Product.objects.all().order_by('-id') 
-#         categories = Category.objects.all()  
-#         context={
-#         'products': products,
-#         'categories': categories  
-#         }
-#     return render(request, 'users/index.html', context)
 
 @login_required
 def profile(request):
@@ -229,6 +205,11 @@ def checkout(request):
         contact_no = request.POST.get('contact_no')
         payment_method = request.POST.get('payment_method')
 
+        # Validate if payment method is selected
+        if not payment_method:
+            messages.error(request, 'Please select a payment method.')
+            return redirect('/checkout/')
+
         # Create the order
         order = Order.objects.create(
             user=request.user,
@@ -236,7 +217,7 @@ def checkout(request):
             payment_method=payment_method,
             contact_no=contact_no,
             address=address,
-            payment_status=False  # Initially, the payment status is set to False (pending).
+            payment_status=True  # Initially, the payment status is set to False (pending).
         )
 
         # Create order items
@@ -248,20 +229,18 @@ def checkout(request):
                 total_price=item.product.product_price * item.quantity
             )
 
-        # Delete items from the cart after the order is created
-        # user_cart_items.delete()
+        # Optionally clear the cart after placing the order
+        user_cart_items.delete()
 
         # Handle payment method-specific logic
         if order.payment_method == 'Cash on Delivery':
             messages.add_message(request, messages.SUCCESS, 'Order successfully placed.')
-            return redirect('/myorder')
+            return redirect('/myorder')  # Redirect to the 'myorder' page where orders are listed
 
         elif order.payment_method == 'Esewa':
-  
-            order_id = order.id 
-            # url1 = reverse('index') 
-            url = "http://127.0.0.1:8000/esewaform" # Get the base URL for the 'esewaform' view
-            return redirect(f'{url}?o_id={order_id}')# You can pass the order ID or other necessary params here
+            order_id = order.id
+            url = "http://127.0.0.1:8000/esewaform"  # Get the base URL for the 'esewaform' view
+            return redirect(f'{url}?o_id={order_id}')  # Pass the order ID to the Esewa payment page
 
         else:
             messages.add_message(request, messages.ERROR, 'Failed to place the order.')
@@ -355,6 +334,48 @@ def esewa_verify(request):
         else:
             messages.error(request, 'Failed to make payment')
             return redirect('/myorder')
+        
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from .forms import CustomUserChangeForm, CustomPasswordChangeForm
+
+@login_required
+def user_profile(request):
+    if request.method == 'POST':
+        user_form = CustomUserChangeForm(request.POST, instance=request.user)
+        if user_form.is_valid():
+            user_form.save()
+            messages.success(request, "Your profile has been updated successfully.")
+            return redirect('users:profile')
+    else:
+        user_form = CustomUserChangeForm(instance=request.user)
+
+    return render(request, 'users/profile.html', {'user_form': user_form})
+
+# View to change the password
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        password_form = CustomPasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, password_form.user)  # To avoid logging out after password change
+            messages.success(request, "Your password has been updated successfully.")
+            return redirect('users:profile')
+    else:
+        password_form = CustomPasswordChangeForm(request.user)
+
+    return render(request, 'users/change_password.html', {'password_form': password_form})
+
+# View to handle account deletion
+@login_required
+def delete_account(request):
+    user = request.user
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('home')  # Redirect to homepage after deletion
+    return render(request, 'users/delete_account.html')  # Confirmation page before deletion
 
 
 class TestView(View):

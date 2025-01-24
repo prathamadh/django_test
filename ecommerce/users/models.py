@@ -32,6 +32,9 @@ class Wishlist(models.Model):
     class Meta:
         unique_together = ('user', 'product')  # Ensure a user can't add the same product more than once
 
+from django.db import models
+from users.models import User  # Assuming User model is in the 'users' app
+from products.models import Product  # Assuming Product model is in the 'products' app
 
 class Order(models.Model):
     PAYMENT = (
@@ -50,9 +53,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username} - {self.payment_method}"
-from django.db import models
-from users.models import Order  # Assuming Order is in the 'users' app
-from products.models import Product  # Assuming Product is in the 'products' app
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
@@ -69,6 +69,7 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.product_name} (x{self.quantity}) - ${self.total_price}"
+
 
 # class OrderItem(models.Model):
 #     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
