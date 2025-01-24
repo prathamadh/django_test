@@ -90,15 +90,8 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'project',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST':'localhost',
-        'PORT': '3306',
-        'OPTIONS':{
-            'init_command':"SET sql_mode='STRICT_TRANS_TAbLES'"
-        }
+        'ENGINE': 'django.db.backends.sqlite3',  # Use SQLite engine
+        'NAME': r'D:\\\django_test\\Eco-bazar-final\\ecommerce\\mysqlite3.db',  # Specify the path to the SQLite file
     }
 }
 
@@ -146,10 +139,3 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '1dcb-27-34-65-29.ngrok-free.app'
-]
