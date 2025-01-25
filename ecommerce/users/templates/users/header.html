@@ -231,7 +231,7 @@
   <div class="container-fluid d-flex justify-content-between align-items-center">
 
     <!-- Search Form -->
-    <form class="d-flex" action="" method="get">
+    <form class="d-flex" action="{% url 'products:search_products' %}" method="get">
       <input class="form-control search-input" type="search" name="q" placeholder="Search for products" aria-label="Search" required>
       <button class="btn search-btn" type="submit">
         <i class="fa fa-search"></i>
@@ -266,8 +266,8 @@
             <ul class="dropdown-menu" aria-labelledby="accountDropdown" style="background-color: #21825d; border-radius: 10px; padding: 8px; min-width: 180px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); font-size: 0.875rem; line-height: 1.2;">
               <li><a class="dropdown-item" href="/profile" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Profile</a></li>
               <li><a class="dropdown-item" href="/cart" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Cart</a></li>
-              <li><a class="dropdown-item" href="/order" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Order</a></li>
-              <li><a class="dropdown-item" href="/password-change" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Password Change</a></li>
+              <li><a class="dropdown-item" href="/myorder" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Order</a></li>
+              <!-- <li><a class="dropdown-item" href="/password-change" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Password Change</a></li> -->
               <li><a class="dropdown-item text-danger" href="/logout" style="font-size: 0.875rem; color: rgb(43, 42, 42); padding: 6px 12px; border-radius: 5px; text-decoration: underline; display: block;">Log Out</a></li>
             </ul>
           </div>

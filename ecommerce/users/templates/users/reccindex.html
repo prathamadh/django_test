@@ -4,14 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    .carousel-inner .carousel-caption{
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: #000;
-    }
+   
     .card img{
       height:200px;
     }
@@ -25,60 +18,61 @@
     .card{
       margin: 10px;
     }
-    .mid{
-    height: 250px;
-    padding: 100px;
-    margin-top: 100px;
-    /* margin-bottom: 80px; */
+    .mid {
+    height: auto; /* Allow dynamic height to accommodate varying content */
+    padding: 50px 20px; /* Adjusted for better responsiveness */
+    margin-top: 50px;
     display: flex;
     flex-wrap: wrap;
     align-content: center;
     justify-content: space-evenly;
     background-color: rgba(85, 173, 92, 0.225);
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding is included in width/height calculations */
 }
-.mid-1{
-   
-    width: 25%;
+
+.mid-1 {
+    width: 30%; /* Slightly increased for better alignment on different screen sizes */
+    max-width: 250px; /* Prevent excessive growth */
+    margin: 10px; /* Add space between items */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
 }
-.mid-1:hover{
-    transform: scale(1.2);
+
+.mid-1:hover {
+    transform: scale(1.1); /* Reduced scale for subtle effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add shadow for better visibility */
 }
-.mid-2 > i{
+
+.mid-2 > i {
     width: 100%;
     font-size: 2rem;
     text-align: center;
+    color: #333; /* Ensure icon is visible */
 }
-.mid-1 > p,h4{
+
+.mid-1 > p, 
+.mid-1 > h4 {
     text-align: center;
-}
-.seller {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 50px;
+    margin: 5px 0; /* Add spacing between elements */
+    color: #333; /* Consistent text color */
 }
 
-.seller p {
-    margin: 0;
+@media (max-width: 768px) {
+    .mid {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+        align-items: center;
+    }
+
+    .mid-1 {
+        width: 80%; /* Adjust width for smaller screens */
+    }
 }
 
-.seller>div {
-    margin: 10px;
-    text-align: center;
-    flex-basis: calc(33.33% - 20px);
-    /* Three items per row */
-    max-width: calc(33.33% - 20px);
-    /* Three items per row */
-}
+  
 
-.seller img {
-    width: 80%;
-    /* Image width to fill the container */
-    max-width: 100%;
-    /* Image width to fill the container */
-    height: 80%;
 
-}
+
+
 
 .carousel-caption {
     position: absolute;
@@ -93,23 +87,7 @@
     margin: 0 20px;
 }
 
-.offer-testimonial {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.bestseller{
-    justify-content: center;
-    text-align: center;
-    font-size: 50px;
-    color: rgb(179, 108, 84);
-    margin-top: 30px;
-}
-.footer-container
-{
-    background-color: rgb(247, 240, 237);
 
-}
 
 footer{
     width: 100%;
@@ -242,6 +220,7 @@ body {
 {% block main-content %}
 {% include 'users/header.html' %}
 
+
 <!-- start of carousel -->
 
 
@@ -264,29 +243,28 @@ body {
     </div>
   </div>
 </section>
-
-
-
-
-
-
 <!-- end of carousel -->
 
 
 <!-- Include Font Awesome CDN for icons -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-<!-- <div class="container-fluid">
-{% for category, products in products_by_category.items %}
-  <!-- Category Name -->
-  <h6 class="text-center mt-4">{{ category.category_name }}</h6>
-  <div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for item in products %}
+<div class="container-fluid">
+
+
+  <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for item in user_recommended_products %}
       <div class="col">
-        <div class="card shadow-sm border-light rounded-3 p-2">
-          <!-- Product Image -->
-          <img src="{{ item.product_image.url }}" class="card-img-top rounded-3" alt="{{ item.product_name }}" style="height: 150px; object-fit: contain;">
+        <div class="card shadow-sm border-light rounded-3 p-2"> 
+          <!-- Product Image Container -->
+          <div style="height: 200px; overflow: hidden;">
+            <img src="/{{ item.product_image }}" 
+                 class="card-img-top rounded-3" 
+                 alt="{{ item.product_name }}" 
+                 style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
           
+          <!-- Card Body -->
           <div class="card-body">
             <!-- Product Name -->
             <h5 class="card-title">
@@ -294,37 +272,95 @@ body {
                 {{ item.product_name }}
               </a>
             </h5>
-            
+  
             <!-- Product Price -->
-            <h3 class="text-primary mb-3">Rs. {{ item.product_price }}</h3>
-            
+            <h3 class="text mb-3" style="color: rgb(24, 92, 24); font-weight: bold;">
+              Rs.{{ item.product_price }}
+            </h3>
+  
             <!-- Add to Cart Button -->
             <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
               {% csrf_token %}
               <button type="submit" class="btn btn-primary flex-grow-1 me-2">
                 <i class="fas fa-shopping-cart me-2"></i> Add to Cart
               </button>
+              
               <!-- Wishlist Button -->
               <button type="button" class="btn btn-outline-danger">
-                <i class="fas fa-heart"></i>
-              </button>
+                <a href="/add_to_wishlist/{{ item.id }}/" class="text-decoration-none text-danger" title="Add to Wishlist">
+                    <i class="fas fa-heart"></i>
+                </a>
+            </button>
             </form>
           </div>
         </div>
       </div>
     {% endfor %}
   </div>
-  <!-- Explore More Button -->
-<div class="text-center mt-3">
-  <a href="{% url 'products:category_product' category.id %}" class="btn btn-outline-primary">
-    Explore More {{ category.category_name }}
-  </a>
-</div>
-{% endfor %}
+  {% for category, products in products_by_category.items %}
+    <!-- Category Name -->
+    <h1 
+    class="text-center mt-4" 
+    style="font-size: 2.5rem; color: #33cc99; font-weight: bold; text-transform: capitalize; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); margin-bottom: 20px; letter-spacing: 1px;"
+>
+    {{ category.category_name }}
+</h1>
 
-  <!-- </div>
-</div> -->
+    
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for item in products %}
+      <div class="col">
+        <div class="card shadow-sm border-light rounded-3 p-2"> 
+          <!-- Product Image Container -->
+          <div style="height: 200px; overflow: hidden;">
+            <img src="/{{ item.product_image }}" 
+                 class="card-img-top rounded-3" 
+                 alt="{{ item.product_name }}" 
+                 style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          
+          <!-- Card Body -->
+          <div class="card-body">
+            <!-- Product Name -->
+            <h5 class="card-title">
+              <a href="/productdetails/{{ item.id }}" class="text-decoration-none text-dark">
+                {{ item.product_name }}
+              </a>
+            </h5>
 
+            <!-- Product Price -->
+            <h3 class="text mb-3" style="color: rgb(24, 92, 24); font-weight: bold;">
+              Rs.{{ item.product_price }}
+            </h3>
+
+            <!-- Add to Cart Button -->
+            <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary flex-grow-1 me-2">
+                <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+              </button>
+              
+              <!-- Wishlist Button -->
+              <button type="button" class="btn btn-outline-danger">
+                <a href="/add_to_wishlist/{{ item.id }}/" class="text-decoration-none text-danger" title="Add to Wishlist">
+                    <i class="fas fa-heart"></i>
+                </a>
+            </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+
+    <!-- Explore More Button -->
+    <div class="text-end mt-3">
+      <a href="{% url 'users:category_product' category.id %}" class="btn btn-text-decoration-underline">
+        Explore More {{ category.category_name }}
+      </a>
+    </div>
+  {% endfor %}
+  
 <!-- Custom CSS -->
 <style>
   .card {
@@ -366,67 +402,102 @@ body {
     font-weight: bold;
   }
 </style>
+<!-- Top Seller -->
+<h3 class="f">Top seller</h3>
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+  {% for item in recommended %}
+    <div class="col">
+      <div class="card shadow-sm border-light rounded-3 p-2"> 
+        <!-- Product Image Container -->
+        <div style="height: 200px; overflow: hidden;">
+          <img src="/{{ item.product_image }}" 
+               class="card-img-top rounded-3" 
+               alt="{{ item.product_name }}" 
+               style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        
+        <!-- Card Body -->
+        <div class="card-body">
+          <!-- Product Name -->
+          <h5 class="card-title">
+            <a href="/productdetails/{{ item.id }}" class="text-decoration-none text-dark">
+              {{ item.product_name }}
+            </a>
+          </h5>
 
-<h3 class="f">Recommneded Product</h3>
-<div class="container-fluid">
+          <!-- Product Price -->
+          <h3 class="text mb-3" style="color: rgb(24, 92, 24); font-weight: bold;">
+            Rs.{{ item.product_price }}
+          </h3>
 
-
-<div class="row flex-nowrap overflow-auto">
-    {% for item in products %}
-      <div class="col-auto">
-        <div class="card" style="width: 18rem;">
-          <img src="/{{ item.product_image }}" class="card-img-top" alt="{{ item.product_name }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ item.product_name }}</h5>
-            <h3>Rs.{{ item.product_price }}</h3>
+          <!-- Add to Cart Button -->
+          <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary flex-grow-1 me-2">
+              <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+            </button>
             
-            <!-- Review Link -->
-            <!-- <a href="/productreviews/{{ item.id }}" class="btn btn-secondary mb-2">See Reviews</a> -->
-
             <!-- Wishlist Button -->
-            <!-- <form action="/add_to_wishlist/{{ item.id }}" method="POST">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-warning">Add to Wishlist</button>
-            </form> -->
-
-            <a href="/productdetails/{{ item.id }}" class="btn btn-primary">View Product</a>
-          </div>
+            <button type="button" class="btn btn-outline-danger">
+              <a href="/add_to_wishlist/{{ item.id }}/" class="text-decoration-none text-danger" title="Add to Wishlist">
+                  <i class="fas fa-heart"></i>
+              </a>
+          </button>
+          </form>
         </div>
       </div>
-    {% endfor %}
+    </div>
+  {% endfor %}
 </div>
-<h3 class="f">All product</h3>
-  <div class="row row-cols-1 row-cols-md-4 row-lg-3">
-    {% for item in recommended%}
-      <div class="col">
-        <div class="card">
-          <img src="/{{ item.product_image }}" class="card-img" alt="{{ item.product_name }}">
-          <div class="card-body">
-            <h5 class="card-title">{{ item.product_name }}</h5>
-            <h3>Rs.{{ item.product_price }}</h3>
+
+<!-- top seller -->
+
+<h3 class="f">Top Recommendation</h3>
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+  {% for item in user_recommendeded_products %}
+    <div class="col">
+      <div class="card shadow-sm border-light rounded-3 p-2"> 
+        <!-- Product Image Container -->
+        <div style="height: 200px; overflow: hidden;">
+          <img src="/{{ item.product_image }}" 
+               class="card-img-top rounded-3" 
+               alt="{{ item.product_name }}" 
+               style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        
+        <!-- Card Body -->
+        <div class="card-body">
+          <!-- Product Name -->
+          <h5 class="card-title">
+            <a href="/productdetails/{{ item.id }}" class="text-decoration-none text-dark">
+              {{ item.product_name }}
+            </a>
+          </h5>
+
+          <!-- Product Price -->
+          <h3 class="text mb-3" style="color: rgb(24, 92, 24); font-weight: bold;">
+            Rs.{{ item.product_price }}
+          </h3>
+
+          <!-- Add to Cart Button -->
+          <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary flex-grow-1 me-2">
+              <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+            </button>
             
-            <!-- Review Link -->
-            <!-- <a href="/productreviews/{{ item.id }}" class="btn btn-secondary mb-2">See Reviews</a> -->
-
             <!-- Wishlist Button -->
-            <!-- <form action="/add_to_wishlist/{{ item.id }}" method="POST">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-warning">Add to Wishlist</button>
-            </form> -->
-
-            <a href="/productdetails/{{ item.id }}" class="btn btn-primary">View Product</a>
-          </div>
+            <button type="button" class="btn btn-outline-danger">
+              <a href="/add_to_wishlist/{{ item.id }}/" class="text-decoration-none text-danger" title="Add to Wishlist">
+                  <i class="fas fa-heart"></i>
+              </a>
+          </button>
+          </form>
         </div>
       </div>
-    {% endfor %}
+    </div>
+  {% endfor %}
   </div>
-</div>
-
-
-
-  
-<!-- end of product section -->
-
 <section class="mid">
   <div class="mid-1">
       <div class="mid-2">
@@ -450,5 +521,10 @@ body {
       <p>We find variety of eco-friendly product and deliver to your doorsteps</p>
   </div>
 </section>
+
+
+
+
+
 {% include 'users/footer.html' %}
 {% endblock %}

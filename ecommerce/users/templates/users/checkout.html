@@ -97,6 +97,45 @@
             </div>
         </div>
     </div>
+    <script>
+        // Function to update the total billing amount
+        function updateTotalBillingAmount() {
+            let totalAmount = 0;
+    
+            // Loop through all items in the cart
+            document.querySelectorAll('.total-price').forEach(priceElement => {
+                const price = parseFloat(priceElement.textContent.replace('Rs', '').trim()) || 0;
+                totalAmount += price;
+            });
+    
+            // Update the total amount in the DOM
+            document.getElementById('total-billing-amount').textContent = totalAmount.toFixed(2);
+        }
+    
+        // Listen for quantity changes and update total price for each item
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('input', function () {
+                // Get the product ID and unit price
+                const id = this.getAttribute('data-id');
+                const unitPrice = parseFloat(this.getAttribute('data-unit-price'));
+                const quantity = parseInt(this.value) || 1; // Default to 1 if invalid value
+    
+                // Calculate the total price
+                const totalPrice = (unitPrice * quantity).toFixed(2);
+    
+                // Update the total price in the DOM
+                const totalPriceElement = document.getElementById(`total-price-${id}`);
+                totalPriceElement.textContent = `Rs ${totalPrice}`;
+    
+                // Update the total billing amount
+                updateTotalBillingAmount();
+            });
+        });
+    
+        // Initial call to update total billing amount on page load
+        updateTotalBillingAmount();
+    </script>
+    
 
     {% include 'users/footer.html' %}
 {% endblock %}

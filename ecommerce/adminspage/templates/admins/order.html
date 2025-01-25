@@ -50,7 +50,7 @@
                                 <td>
                                     <ul>
                                         {% for item in order.items.all %}
-                                            <li>{{ item.product_name }} - ${{ item.product_price }}</li>
+                                            <li>{{ item.product_name }} - Rs{{ item.product_price }}</li>
                                         {% endfor %}
                                     </ul>
                                 </td>

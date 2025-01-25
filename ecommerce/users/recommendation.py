@@ -1,3 +1,4 @@
+
 # from surprise import  SVD
 # import joblib
 # model = SVD()
@@ -19,14 +20,42 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 # Sample data (same as before)
-df = pd.read_csv("/content/user_product_interactions_no_rating.csv")
+df = pd.read_csv(r"D:\django_test\test2\college-project\ecommerce\ecommerce\data\user_product_interactions_no_rating.csv")
+# =======
+# from surprise import  SVD
+# import joblib
+# model = SVD()
+# model = joblib.load(r'C:\Users\Dell\OneDrive\Desktop\git\college project\ecommerce\lightfm_model.pkl')
+# import pandas as pd
+# from sklearn.metrics.pairwise import cosine_similarity
+# import numpy as np
+# def get_recommendations(user_id, model, all_product_ids):
+#     # Get predictions for all products for the given user_id
+#     predictions = [model.predict(user_id, product_id) for product_id in all_product_ids]
+    
+#     # Sort the predictions based on the estimated ratings
+#     predictions.sort(key=lambda x: x.est, reverse=True)
+    
+#     # Get the top recommended products (based on the highest predicted ratings)
+#     top_recommendations = [prediction.iid for prediction in predictions[:10]]  # Top 10 products
+#     return top_recommendations
+
+
+
+
+
+
+# # Sample data (same as before)
+# df = pd.read_csv(r"C:\Users\Dell\OneDrive\Desktop\git\college project\ecommerce\ecommerce\data\user_product_interactions_no_rating.csv")
+# >>>>>>> 5c0c895590d76b1b8a9c9fb64cfe4615579a89f9
 
 # Encode actions to numerical values
 action_map = {'click': 1, 'view': 1, 'buy': 2}
 df['action_value'] = df['action'].map(action_map)
 
-# Step 2: Create the user-product interaction matrix
-interaction_matrix = df.pivot_table(index='user_id', columns='product_id', values='action_value', aggfunc='max', fill_value=0)
+
+interaction_matrix = df.pivot_table(index='user_id', columns='Product_id', values='action_value', aggfunc='max', fill_value=0)
+
 
 # Step 3: Compute cosine similarity between products (using their columns)
 product_similarity = cosine_similarity(interaction_matrix.T)
