@@ -12,7 +12,7 @@
 <div class="container my-5">
     <div class="row d-flex justify-content-center">
         <div class="col-md-10">
-            {% if items|length < 1 %}
+            {% if order_items|length < 1 %}
                 <h2 class="text-center text-danger my-3">No any order</h2>
             {% else %}
                 <h2 class="text-center">My Ordered Items</h2>
@@ -43,15 +43,27 @@
                     </thead>
 
                     <tbody>
-                        {% for i in items %}
+                        {% for i in order_items %}
                             <tr>
                                 <td>{{ i.product.product_name }}</td>
                                 <td>Rs {{ i.product.product_price }}</td>
                                 <td>
                                     <img src="{{ i.product.product_image.url }}" alt="{{ i.product.product_name }}" width="100" height="100">
                                 </td>
-                                <td>{{ i.payment_status }}</td>
-                                <td>{{ i.delivery_status }}</td>
+                                <td>
+                                    {% if i.order.is_paid %}
+                                        Paid
+                                    {% else %}
+                                        Pending
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if i.is_ordered %}
+                                        Delivered
+                                    {% else %}
+                                        In Progress
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

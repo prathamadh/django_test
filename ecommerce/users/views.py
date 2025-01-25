@@ -330,7 +330,7 @@ def esewa_verify(request):
             order.save()
             cart.delete()
             messages.success(request, 'Payment successful.')
-            return redirect('/my0rder')
+            return redirect('/myorder')
         else:
             messages.error(request, 'Failed to make payment')
             return redirect('/myorder')
