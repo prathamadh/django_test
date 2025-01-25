@@ -13,7 +13,7 @@ from django.shortcuts import redirect, get_object_or_404
 from products.models import Product, Category
 from .models import Cart, Order,  OrderItem,Address
 from django.utils.decorators import method_decorator
-from .recommendation import get_recommendations
+from .recommendation import get_recommendations,recommend_products
 from surprise import  SVD
 import joblib
 model = SVD()
@@ -34,14 +34,18 @@ def index(request):
     if request.user.is_authenticated:
         user_id = request.user.id
         product_list = products.values_list('id', flat=True)
-        recommended_items = get_recommendations(user_id, model, product_list)
-        recommended_products = Product.objects.filter(id__in=recommended_items)
+        top_recommended_items = get_recommendations(user_id, model, product_list)
+        recommended_products = Product.objects.filter(id__in=top_recommended_items)
+        idi=recommend_products("User_1")
+        int_id = [int(i) for i in idi]
+        user_recommendeded_products = Product.objects.filter(id__in=int_id)
         
         context = {
             'products': products,
             'categories': categories,
             'products_by_category': products_by_category,
             'recommended': recommended_products,
+            'user_recommendeded_products' : user_recommendeded_products,
         }
         
         return render(request, 'users/reccindex.html', context)
@@ -50,6 +54,7 @@ def index(request):
             'products': products,
             'categories': categories,
             'products_by_category': products_by_category,
+            
         }
         
     return render(request, 'users/index.html', context)

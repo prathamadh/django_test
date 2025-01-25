@@ -10,8 +10,14 @@
 
 {% include 'users/header.html' %}
   <!-- category_product.html -->
-  <h1 class="text-center mt-4">{{ category.category_name }}</h1>
+
   <div class="container-fluid">
+    <h1 
+    class="text-center mt-4" 
+    style="font-size: 2.5rem; color: #33cc99; font-weight: bold; text-transform: capitalize; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); margin-bottom: 20px; letter-spacing: 1px;"
+>
+    {{ category.category_name }}
+</h1>
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
       {% for item in products %}
         <div class="col">

@@ -231,7 +231,7 @@
   <div class="container-fluid d-flex justify-content-between align-items-center">
 
     <!-- Search Form -->
-    <form class="d-flex" action="" method="get">
+    <form class="d-flex" action="{% url 'products:search_products' %}" method="get">
       <input class="form-control search-input" type="search" name="q" placeholder="Search for products" aria-label="Search" required>
       <button class="btn search-btn" type="submit">
         <i class="fa fa-search"></i>

@@ -1,122 +1,95 @@
 {% extends 'layouts.html' %}
 {% load crispy_forms_tags %}
-
+{% include 'users/header.html' %}
 {% block title %}
 <title>Register</title>
 {% endblock %}
 
 <style>
-    /* Eco-Friendly Styling */
+    /* Body Styling */
     body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #f4f9f4;
-        color: #2e3a24;
-        margin: 0;
-        padding: 0;
+        background-color: #f3f9f3; /* Light eco-friendly green background */
+        font-family: 'Arial', sans-serif;
+        color: #333;
     }
-
-    .eco-font {
-        font-family: 'Lora', serif;
-        color: #2d6a4f;
+    
+    /* Title Styling */
+    h2.eco-font {
+        color: #2a7a2a; /* Deep green */
+        font-weight: bold;
     }
-
-    .eco-box {
-        background-color: #e0f7e8;
-        border: 2px solid #2d6a4f;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-control {
-        border-radius: 10px;
-        padding: 12px;
-        border: 1px solid #2d6a4f;
-        margin-bottom: 20px;
-        box-sizing: border-box;
-    }
-
-    .btn {
-        border-radius: 5px;
-        font-size: 1.1em;
-        padding: 12px;
-        transition: background-color 0.3s;
-        background-color: #2d6a4f;
-        color: #fff;
-        border: none;
-        width: 100%;
-    }
-
-    .btn-success:hover {
-        background-color: #1b5e20;
-    }
-
-    .alert {
-        font-size: 1.1em;
-        margin-top: 10px;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
+    
+    /* Container Styling */
     .container {
         margin-top: 50px;
-        padding: 0 15px;
+        margin-bottom: 50px;
     }
-
-    .row {
-        display: flex;
-        justify-content: center;
+    
+    /* Form Card Styling */
+    .eco-box {
+        border: 2px solid #d1e7d1; /* Light green border */
+        background-color: #ffffff; /* White background for contrast */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        border-radius: 12px; /* Rounded corners */
     }
-
-    .col-md-6, .col-lg-4 {
-        background-color: #ffffff;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-        color: #2d6a4f;
-        font-weight: bold;
-    }
-
-    input[type="submit"] {
+    
+    /* Input Fields Styling */
+    input[type="text"], input[type="email"], input[type="password"] {
+        border: 1px solid #d1e7d1; /* Light green border */
+        border-radius: 6px;
+        padding: 10px;
         width: 100%;
-        font-size: 1.1em;
-        padding: 12px;
-        background-color: #2d6a4f;
-        color: white;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
+        margin-bottom: 15px;
+        font-size: 14px;
+        color: #333;
     }
-
-    input[type="submit"]:hover {
-        background-color: #1b5e20;
-    }
-
+    
+    /* Submit Button Styling */
     .eco-btn {
-        background-color: #4caf50;
-        font-weight: bold;
+        background-color: #2a7a2a; /* Deep green button */
+        color: #fff; /* White text */
+        font-size: 16px;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        transition: all 0.3s ease-in-out;
     }
-
+    
+    .eco-btn:hover {
+        background-color: #1f5a1f; /* Darker green on hover */
+        transform: scale(1.05); /* Slightly larger */
+    }
+    
+    /* Alert Messages Styling */
+    .alert {
+        border-radius: 6px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    
+    .alert-success {
+        background-color: #d4edda; /* Light green success background */
+        border: 1px solid #c3e6cb; /* Green border */
+        color: #155724; /* Dark green text */
+    }
+    
+    .alert-danger {
+        background-color: #f8d7da; /* Light red error background */
+        border: 1px solid #f5c6cb; /* Red border */
+        color: #721c24; /* Dark red text */
+    }
+    
     /* Responsive Design */
     @media (max-width: 768px) {
-        .col-md-6 {
-            width: 100%;
-            padding: 15px;
+        .eco-box {
+            margin: 20px 15px;
+            padding: 20px;
         }
     }
-</style>
+    </style>
+    
+    
 
 {% block main-content %}
 <h2 class="text-center my-4 eco-font">Register Form</h2>
@@ -147,3 +120,4 @@
     </div>
 </div>
 {% endblock %}
+{% include 'users/footer.html' %}
