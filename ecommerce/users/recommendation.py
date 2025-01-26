@@ -63,7 +63,7 @@ product_similarity = cosine_similarity(interaction_matrix.T)
 product_similarity_df = pd.DataFrame(product_similarity, index=interaction_matrix.columns, columns=interaction_matrix.columns)
 
 # Function to recommend top N products to a user based on product similarity
-def recommend_products(user_id, top_n=10):
+def recommend_products(user_id, top_n=1):
     # Get the user-product interaction data for the given user_id
     user_interactions = interaction_matrix.loc[user_id]
 

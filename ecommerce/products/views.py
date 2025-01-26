@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from users.auth import admin_only
 # Create your views here.
-
+from users.views import global_category_ids
 @login_required
 @admin_only
 
@@ -135,11 +135,33 @@ def update_category(request,category_id):
 
 @login_required
 @admin_only
-def delete_category(request,category_id):
-    category= Category.objects.get(id=category_id)
-    category.delete()
-    messages.add_message(request,messages.SUCCESS,' Category deleted')
+# Define the global variable to store category IDs
+
+
+@admin_only
+def delete_category(request, category_id):
+    global global_category_ids  # Use the global variable
+
+    try:
+        # Get the category by ID
+        category = Category.objects.get(id=category_id)
+
+        # Delete the category from the database
+        # category.delete()
+
+        # Remove the category ID from the global list
+        if category_id in global_category_ids:
+            global_category_ids.remove(category_id)
+
+        # Add a success message
+        messages.add_message(request, messages.SUCCESS, 'Category deleted successfully.')
+    except Category.DoesNotExist:
+        # Handle the case where the category does not exist
+        messages.add_message(request, messages.ERROR, 'Category not found.')
+
+    # Redirect to the categories page
     return redirect('/products/categories')
+
 
 
 

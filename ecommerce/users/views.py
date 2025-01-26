@@ -20,12 +20,23 @@ import joblib
 import pandas as pd
 model = SVD()
 model = joblib.load('lightfm_model.pkl')
+global_category_ids =[]
 
+global_category_ids = []
 
+# Function to fill the global_category_ids list with category IDs
+def populate_category_ids():
+    global global_category_ids
+    # Query to fetch category IDs from the database
+    categories = Category.objects.all()  # Fetch all categories
+    global_category_ids = [category.id for category in categories]
+
+# Call this function somewhere appropriate, e.g., at the start of your application
+populate_category_ids()
 
 # Create your views here.
 def index(request):
-    categories = Category.objects.all() 
+    categories = Category.objects.filter(id__in=global_category_ids) 
     products = Product.objects.all().order_by('-id')  # Fetch all products in descending order
     products_by_category = {}  # Dictionary to store products grouped by category
     
