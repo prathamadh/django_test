@@ -55,7 +55,7 @@ df['action_value'] = df['action'].map(action_map)
 
 
 interaction_matrix = df.pivot_table(index='user_id', columns='Product_id', values='action_value', aggfunc='max', fill_value=0)
-
+interaction_matrix.to_csv(r"D:\django_test\test2\college-project\ecommerce\ecommerce\data\interaction_matrix.csv")
 
 # Step 3: Compute cosine similarity between products (using their columns)
 product_similarity = cosine_similarity(interaction_matrix.T)
@@ -88,3 +88,37 @@ def recommend_products(user_id, top_n=10):
     top_products = [product for product, score in sorted_products[:top_n]]
     
     return top_products
+
+
+# def get_matrix(user_id):
+#     user_interactions = interaction_matrix.loc[user_id]
+#     return user_interactions,interacted_products
+
+def get_matrix(user_id):
+    """
+    Returns the interaction matrix for a given user and the similarity matrix for each product from which
+    the recommendation score was calculated.
+    """
+    # Get user interactions for the given user_id
+    user_interactions = interaction_matrix.loc[user_id]
+    
+    # List of products the user has interacted with
+    interacted_products = user_interactions[user_interactions > 0].index.tolist()
+
+    # Dictionary to store the matrices
+    product_matrices = {}
+
+    for product in interaction_matrix.columns:
+        if product not in interacted_products:
+            # Create a matrix showing similarity values for products the user interacted with
+            similarity_matrix = {}
+            for interacted_product in interacted_products:
+                similarity_matrix[interacted_product] = {
+                    "Similarity Score": product_similarity_df.loc[product, interacted_product],
+                    "User Interaction Value": user_interactions[interacted_product]
+                }
+            product_matrices[product] = similarity_matrix
+
+    return user_interactions, interacted_products, product_matrices
+
+

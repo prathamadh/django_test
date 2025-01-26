@@ -35,6 +35,7 @@ urlpatterns=[
     
     path('change_password/', views.change_password, name='change_password'),
     path('delete_account/', views.delete_account, name='delete_account'),
+    path("show",views.show_matrix,name='show_matrix'),
 
 
 

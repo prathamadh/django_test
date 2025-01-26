@@ -13,12 +13,14 @@ from django.shortcuts import redirect, get_object_or_404
 from products.models import Product, Category
 from .models import Cart, Order,  OrderItem,Address
 from django.utils.decorators import method_decorator
-
-from .recommendation import get_recommendations,recommend_products
+# from .recommendation import get_recommendations,recommend_products,get_matrix
+from .recommendation import recommend_products,get_matrix
 from surprise import  SVD
 import joblib
+import pandas as pd
 model = SVD()
 model = joblib.load('lightfm_model.pkl')
+
 
 
 # Create your views here.
@@ -35,12 +37,13 @@ def index(request):
     if request.user.is_authenticated:
         user_id = request.user.id
         product_list = products.values_list('id', flat=True)
-        top_recommended_items = get_recommendations(user_id, model, product_list)
+        # top_recommended_items = get_recommendations(user_id, model, product_list)
+        top_recommended_items=[]
         recommended_products = Product.objects.filter(id__in=top_recommended_items)
         idi=recommend_products("User_2")
         int_id = [int(i) for i in idi]
         user_recommendeded_products = Product.objects.filter(id__in=int_id)
-
+       
 
         context = {
             'products': products,
@@ -403,7 +406,70 @@ def my_order(request):
     return render(request, 'users/myorder.html', context)
 
 
+from django.http import JsonResponse, HttpResponse
 
+# def show_matrix(request):
+#     user = request.user  # Get the logged-in user
+#     if user.is_authenticated:
+#         # try:
+#             # Fetch user interactions
+#             user_interactions,user_product = get_matrix("User_1")
+            
+#             # Ensure it's JSON serializable
+#             if isinstance(user_interactions, pd.Series):
+#                 user_interactions = user_interactions.to_dict()  # Convert Series to dictionary
+#             elif isinstance(user_interactions, pd.DataFrame):
+#                 user_interactions = user_interactions.to_dict(orient="records") 
+                
+#             if isinstance(user_product, pd.Series):
+#                 user_interactions = user_interactions.to_dict()  # Convert Series to dictionary
+#             elif isinstance(user_product, pd.DataFrame):
+#                 user_interactions = user_interactions.to_dict(orient="records")  # Convert DataFrame to list of dicts
+            
+#             return JsonResponse({'interactions': user_interactions})
+#         # except Exception as e:
+#         #     return JsonResponse({'error': str(e)}, status=500)  # Graceful error handling
+#     else:
+#         return HttpResponse("Unauthorized", status=401)
+
+
+
+from django.http import JsonResponse
+
+def show_matrix(request):
+        user=request.user
+        user_id="User_"+str(user.id)
+        # user_id = "User_1"  # Hardcoded user_id for demonstration purposes
+    # try:
+        # Fetch the user interactions, interacted products, and product matrices
+        user_interactions, interacted_products, product_matrices = get_matrix(user_id)
+        
+        # Build the dictionary for JSON response
+        response_data = {
+            "user_id": user_id,  # Convert user_id to a native Python int
+            "user_interactions": user_interactions.astype(int).to_dict(),  # Convert Series to dict with native Python int
+            "interacted_products": interacted_products,
+            "product_matrices": {
+                str(product): {
+                    str(interacted_product): {
+                        "Similarity Score": float(details["Similarity Score"]),  # Convert to Python float
+                        "User Interaction Value": int(details["User Interaction Value"])  # Convert to Python int
+                    }
+                    for interacted_product, details in matrix.items()
+                }
+                for product, matrix in product_matrices.items()
+            }
+        }
+
+        return JsonResponse(response_data, safe=False)
+
+    # except KeyError:
+    #     # Handle cases where user_id is not in the interaction matrix
+    #     return JsonResponse({"error": f"User ID {user_id} not found in the interaction matrix."}, status=404)
+
+    # except Exception as e:
+    #     # Handle other exceptions
+    #     return JsonResponse({"error": str(e)}, status=500)
 
 
 
